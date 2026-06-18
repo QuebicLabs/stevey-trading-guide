@@ -1,0 +1,2476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stevey's 30-Day Trading Crash Course · Quebic Labs</title>
+<style>
+  :root {
+    --bg: #0a0a14;
+    --panel: #14142a;
+    --panel-hi: #1c1c3a;
+    --border: #2a2a4a;
+    --text: #e8e8f5;
+    --text-dim: #8a8aa8;
+    --cyan: #00fff0;
+    --magenta: #ff2bd6;
+    --neon-green: #39ff14;
+    --bull: #26a69a;
+    --bear: #ef5350;
+    --gold: #ffd700;
+    --warn: #ff9800;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', Helvetica, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(0,255,240,0.05) 0%, transparent 40%),
+      radial-gradient(circle at 85% 100%, rgba(255,43,214,0.05) 0%, transparent 40%);
+    background-attachment: fixed;
+  }
+  header.hero {
+    padding: 50px 20px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--panel) 0%, transparent 100%);
+  }
+  header.hero h1 {
+    font-size: 38px;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta), var(--neon-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 40px rgba(0, 255, 240, 0.3);
+    letter-spacing: 1px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    font-family: 'SF Pro Display', -apple-system, sans-serif;
+  }
+  header.hero .tag {
+    color: var(--text-dim);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  header.hero .for {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--cyan);
+  }
+  nav.daynav {
+    position: sticky;
+    top: 0;
+    background: rgba(10, 10, 20, 0.97);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    z-index: 100;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  nav.daynav a {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-right: 4px;
+    color: var(--text-dim);
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  nav.daynav a:hover {
+    color: var(--cyan);
+    border-color: var(--cyan);
+  }
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 20px 100px;
+  }
+
+  /* SECTION CARDS */
+  .day {
+    margin-bottom: 28px;
+    padding: 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+  .day .day-header {
+    padding: 18px 24px;
+    background: linear-gradient(90deg, var(--panel-hi) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .day .day-num {
+    background: linear-gradient(135deg, var(--cyan), var(--magenta));
+    color: #000;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .day.complete .day-num {
+    background: var(--neon-green);
+    box-shadow: 0 0 16px rgba(57, 255, 20, 0.5);
+  }
+  .day .day-title {
+    font-size: 19px;
+    color: var(--text);
+    font-weight: 700;
+  }
+  .day .day-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .day .chev {
+    margin-left: auto;
+    color: var(--text-dim);
+    font-size: 20px;
+    transition: transform 0.2s;
+  }
+  .day.open .chev { transform: rotate(180deg); }
+  .day .day-body {
+    padding: 0 24px 24px;
+    display: none;
+  }
+  .day.open .day-body { display: block; }
+  .day-body h3 {
+    font-size: 17px;
+    color: var(--cyan);
+    margin: 22px 0 10px;
+    text-shadow: 0 0 8px rgba(0, 255, 240, 0.3);
+  }
+  .day-body h4 {
+    font-size: 14px;
+    color: var(--magenta);
+    margin: 16px 0 6px;
+  }
+  .day-body p { margin-bottom: 12px; }
+  .day-body ul, .day-body ol { margin: 10px 0 14px 24px; }
+  .day-body li { margin-bottom: 6px; }
+  .day-body code {
+    background: var(--panel-hi);
+    color: var(--cyan);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-family: 'SF Mono', Menlo, monospace;
+  }
+
+  /* TOOLS / SECTIONS */
+  .tools {
+    margin-top: 50px;
+    padding: 24px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .tools h2 {
+    font-size: 24px;
+    color: var(--cyan);
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tools h3 {
+    color: var(--magenta);
+    margin: 24px 0 12px;
+    font-size: 17px;
+  }
+
+  /* SVG */
+  svg.diagram {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    background: #050510;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin: 14px 0;
+    display: block;
+  }
+  svg.iso {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 14px 0;
+  }
+
+  /* CALLOUT BOXES */
+  .tip, .warn, .info, .quiz-box {
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin: 16px 0;
+    font-size: 14px;
+    border-left: 4px solid;
+  }
+  .tip {
+    background: rgba(57, 255, 20, 0.08);
+    border-left-color: var(--neon-green);
+  }
+  .warn {
+    background: rgba(239, 83, 80, 0.12);
+    border-left-color: var(--bear);
+  }
+  .info {
+    background: rgba(0, 255, 240, 0.07);
+    border-left-color: var(--cyan);
+  }
+  .tip strong { color: var(--neon-green); }
+  .warn strong { color: var(--bear); }
+  .info strong { color: var(--cyan); }
+
+  /* QUIZ */
+  .quiz-box {
+    background: rgba(255, 215, 0, 0.06);
+    border-left-color: var(--gold);
+  }
+  .quiz-box strong { color: var(--gold); }
+  .quiz-q {
+    margin: 12px 0;
+    padding: 12px;
+    background: var(--panel-hi);
+    border-radius: 4px;
+  }
+  .quiz-q .q-text {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .quiz-q label {
+    display: block;
+    padding: 6px 10px;
+    margin: 4px 0;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.15s;
+  }
+  .quiz-q label:hover {
+    border-color: var(--cyan);
+  }
+  .quiz-q label.correct {
+    background: rgba(57, 255, 20, 0.15);
+    border-color: var(--neon-green);
+    color: var(--neon-green);
+  }
+  .quiz-q label.wrong {
+    background: rgba(239, 83, 80, 0.15);
+    border-color: var(--bear);
+    color: var(--bear);
+  }
+  .quiz-q input[type=radio] { display: none; }
+
+  /* TABLES */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 12px 0;
+  }
+  table th, table td {
+    padding: 9px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  table th {
+    background: var(--panel-hi);
+    color: var(--cyan);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* PROFIT CALENDAR */
+  #calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .cal-cell {
+    aspect-ratio: 1;
+    background: var(--panel-hi);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .cal-cell:hover { border-color: var(--cyan); }
+  .cal-cell.win { background: rgba(57, 255, 20, 0.18); border-color: var(--neon-green); }
+  .cal-cell.loss { background: rgba(239, 83, 80, 0.18); border-color: var(--bear); }
+  .cal-cell.flat { background: rgba(255, 215, 0, 0.10); border-color: var(--gold); }
+  .cal-cell .day-no {
+    color: var(--text-dim);
+    font-size: 10px;
+  }
+  .cal-cell .pl {
+    font-weight: 700;
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .cal-cell.win .pl { color: var(--neon-green); }
+  .cal-cell.loss .pl { color: var(--bear); }
+  .cal-cell.flat .pl { color: var(--gold); }
+  .cal-summary {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .cal-stat {
+    background: var(--panel-hi);
+    padding: 12px;
+    border-radius: 5px;
+    text-align: center;
+  }
+  .cal-stat .label {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .cal-stat .val {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  /* TRADE JOURNAL */
+  .journal-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .journal-form input, .journal-form select, .journal-form textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 13px;
+  }
+  .journal-form input:focus, .journal-form select:focus, .journal-form textarea:focus {
+    outline: none;
+    border-color: var(--cyan);
+  }
+  .journal-form label {
+    grid-column: 1 / -1;
+    color: var(--cyan);
+    font-size: 11px;
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+  .journal-form textarea {
+    grid-column: 1 / -1;
+    min-height: 60px;
+    font-family: inherit;
+  }
+  .journal-form button {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, var(--cyan), var(--neon-green));
+    color: #000;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  #journalList {
+    margin-top: 16px;
+  }
+  .journal-entry {
+    background: var(--panel-hi);
+    border-left: 4px solid var(--text-dim);
+    padding: 12px 14px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+  .journal-entry.win { border-left-color: var(--neon-green); }
+  .journal-entry.loss { border-left-color: var(--bear); }
+  .journal-entry .je-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .journal-entry .je-pl { font-weight: 700; }
+  .journal-entry.win .je-pl { color: var(--neon-green); }
+  .journal-entry.loss .je-pl { color: var(--bear); }
+
+  /* RISK CALC */
+  .risk-calc {
+    background: var(--panel-hi);
+    border: 1px solid var(--cyan);
+    box-shadow: 0 0 20px rgba(0, 255, 240, 0.12);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+  }
+  .risk-calc .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .risk-calc label {
+    display: block;
+    color: var(--cyan);
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .risk-calc input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px;
+    font-family: inherit;
+    border-radius: 4px;
+  }
+  .risk-calc .out {
+    background: var(--bg);
+    border: 1px dashed var(--neon-green);
+    padding: 14px;
+    border-radius: 5px;
+    margin-top: 16px;
+  }
+  .risk-calc .out div {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 13px;
+  }
+  .risk-calc .out strong { color: var(--neon-green); }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    background: var(--panel-hi);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 14px 0;
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, var(--cyan), var(--neon-green));
+    height: 100%;
+    transition: width 0.4s;
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
+  }
+  .progress-text {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  /* GRID UTILITIES */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  @media (max-width: 720px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .cal-summary { grid-template-columns: 1fr 1fr; }
+    .risk-calc .grid { grid-template-columns: 1fr; }
+    .journal-form { grid-template-columns: 1fr; }
+  }
+
+  footer {
+    text-align: center;
+    color: var(--text-dim);
+    padding: 30px;
+    font-size: 11px;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+  }
+  footer a { color: var(--cyan); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>STEVEY'S TRADING SCHOOL</h1>
+  <div class="tag">30-Day Crash Course · Zero to Confident</div>
+  <div class="for">Built by Quebic Labs · For Stevey & Justin</div>
+  <div class="progress-bar" style="max-width: 400px; margin: 24px auto 8px;">
+    <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+  </div>
+  <div class="progress-text"><span id="progressDays">0</span>/30 days complete</div>
+</header>
+
+<nav class="daynav">
+  <a href="#start">▸ Start Here</a>
+  <a href="#day1">D1</a><a href="#day2">D2</a><a href="#day3">D3</a><a href="#day4">D4</a><a href="#day5">D5</a>
+  <a href="#day6">D6</a><a href="#day7">D7</a><a href="#day8">D8</a><a href="#day9">D9</a><a href="#day10">D10</a>
+  <a href="#day11">D11</a><a href="#day12">D12</a><a href="#day13">D13</a><a href="#day14">D14</a><a href="#day15">D15</a>
+  <a href="#day16">D16</a><a href="#day17">D17</a><a href="#day18">D18</a><a href="#day19">D19</a><a href="#day20">D20</a>
+  <a href="#day21">D21</a><a href="#day22">D22</a><a href="#day23">D23</a><a href="#day24">D24</a><a href="#day25">D25</a>
+  <a href="#day26">D26</a><a href="#day27">D27</a><a href="#day28">D28</a><a href="#day29">D29</a><a href="#day30">D30</a>
+  <a href="#tools">▸ Tools</a>
+  <a href="#calendar-section">▸ Calendar</a>
+  <a href="#journal-section">▸ Journal</a>
+  <a href="#glossary">▸ Glossary</a>
+</nav>
+
+<main>
+
+<!-- ───────────── START HERE ───────────── -->
+<section id="start" class="day open" data-day="0">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">★</div>
+    <div>
+      <div class="day-title">Welcome, Stevey</div>
+      <div class="day-sub">Read this first · 5 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>What this is</h3>
+    <p>Hey Stevey. This is a <strong>30-day school</strong> that teaches you how to trade futures. You'll go from "what's a candlestick" on Day 1 to "I just took a trade and made $40 on a single contract" by Day 30.</p>
+    <p>You don't need a finance degree. You don't need to be a math whiz. You need to read one section per day, click through the visuals, do the quiz at the end, and tick the checkbox. <strong>One day at a time. Don't skip ahead.</strong></p>
+
+    <h3>What you'll need</h3>
+    <ul>
+      <li><strong>A free TradingView account</strong> (we'll set this up on Day 5)</li>
+      <li><strong>30–60 minutes a day</strong> for 30 days</li>
+      <li><strong>A notebook or this site's journal</strong> (built in)</li>
+      <li><strong>Patience.</strong> The market doesn't care if you're in a hurry.</li>
+    </ul>
+
+    <h3>The deal</h3>
+    <div class="info">
+      <strong>You will not risk real money for the first 25 days.</strong> Days 1–25 are learning + paper trading. Day 26+ is when we talk about going live, with rules. If you skip ahead and lose money I'm going to be mad.
+    </div>
+
+    <h3>How this site works</h3>
+    <ul>
+      <li>Click any <strong>day card</strong> to open it. Click again to close.</li>
+      <li>Each day ends with a <strong>quick quiz</strong> — answer the questions, then click the checkbox at the bottom to mark the day complete.</li>
+      <li>Your progress saves automatically in your browser. Don't clear cookies for this site.</li>
+      <li>The <strong>Tools</strong> section at the bottom has a profit calendar, trade journal, and risk calculator. Use them every day once you start trading.</li>
+    </ul>
+
+    <div class="tip">
+      <strong>Real talk:</strong> Justin built this for you because he believes you can do this. The market is the most fair game on earth — it doesn't care who your parents are or what school you went to. It only cares if you respect risk and follow your rules. Let's go.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ WEEK 1: ABSOLUTE BASICS ═══════════════ -->
+
+<!-- DAY 1 -->
+<section id="day1" class="day" data-day="1">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">1</div>
+    <div>
+      <div class="day-title">What is trading?</div>
+      <div class="day-sub">Week 1: Absolute Basics · 30 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>The 30-second version</h3>
+    <p>Trading is buying something at one price and selling it at another. If you buy low and sell high, you make money. If you buy high and sell low, you lose money. <strong>That's it.</strong> Everything else is details.</p>
+
+    <h3>What we trade: futures contracts</h3>
+    <p>You're not going to trade stocks (Apple, Tesla, etc.) in this course. You're going to trade <strong>futures</strong>, specifically a futures contract called <strong>MNQ</strong> (Micro E-mini Nasdaq-100).</p>
+
+    <h4>What's a futures contract?</h4>
+    <p>It's a deal between two people that says "I'll buy this thing from you at this price on this date." Hundreds of years ago, farmers used futures to lock in the price of corn before harvest. Today, traders use futures to bet on whether prices will go up or down.</p>
+
+    <h4>Why MNQ specifically?</h4>
+    <ul>
+      <li><strong>It's small.</strong> The "Micro" in MNQ means it's 1/10th the size of the regular contract. Small = less risk per trade.</li>
+      <li><strong>It's liquid.</strong> Lots of traders are always buying and selling it, so you can always get in and out fast.</li>
+      <li><strong>It moves predictably.</strong> The Nasdaq-100 (which MNQ tracks) is one of the cleanest charts in trading.</li>
+      <li><strong>It's open 23 hours a day.</strong> You can trade it whenever fits your schedule.</li>
+    </ul>
+
+    <h3>Long vs Short</h3>
+    <p>Two ways to make money:</p>
+    <ul>
+      <li><strong>Going LONG (buying):</strong> You think price will go UP. You buy now, sell later at a higher price. Profit = sell price − buy price.</li>
+      <li><strong>Going SHORT (selling):</strong> You think price will go DOWN. You sell now, buy back later at a lower price. Profit = sell price − buy price (still positive because sell was higher).</li>
+    </ul>
+    <p>Don't worry about how shorting works mechanically yet. Just know <strong>you can make money in both directions</strong>. That's a superpower compared to old-school stock investors who can only profit when prices go up.</p>
+
+    <svg class="diagram" viewBox="0 0 560 220">
+      <rect width="560" height="220" fill="#050510"/>
+      <text x="20" y="25" fill="#00fff0" font-size="13" font-family="monospace">LONG (BUY → SELL HIGHER)</text>
+      <line x1="20" y1="100" x2="270" y2="50" stroke="#26a69a" stroke-width="3"/>
+      <circle cx="20" cy="100" r="6" fill="#26a69a"/>
+      <text x="30" y="120" fill="#26a69a" font-size="11">BUY @ $100</text>
+      <circle cx="270" cy="50" r="6" fill="#39ff14"/>
+      <text x="180" y="40" fill="#39ff14" font-size="11">SELL @ $120 = +$20</text>
+
+      <text x="300" y="25" fill="#00fff0" font-size="13" font-family="monospace">SHORT (SELL → BUY BACK LOWER)</text>
+      <line x1="300" y1="60" x2="540" y2="160" stroke="#ef5350" stroke-width="3"/>
+      <circle cx="300" cy="60" r="6" fill="#ef5350"/>
+      <text x="310" y="50" fill="#ef5350" font-size="11">SHORT @ $120</text>
+      <circle cx="540" cy="160" r="6" fill="#39ff14"/>
+      <text x="430" y="180" fill="#39ff14" font-size="11">BUY @ $100 = +$20</text>
+    </svg>
+
+    <div class="quiz-box">
+      <strong>★ Day 1 Quiz</strong>
+      <div class="quiz-q" data-correct="0">
+        <div class="q-text">Q1: If you go LONG and price goes DOWN, what happens?</div>
+        <label><input type="radio" name="d1q1"> You lose money</label>
+        <label><input type="radio" name="d1q1"> You make money</label>
+        <label><input type="radio" name="d1q1"> Nothing happens</label>
+      </div>
+      <div class="quiz-q" data-correct="1">
+        <div class="q-text">Q2: What does "MNQ" stand for?</div>
+        <label><input type="radio" name="d1q2"> Mini Nasdaq</label>
+        <label><input type="radio" name="d1q2"> Micro E-mini Nasdaq-100</label>
+        <label><input type="radio" name="d1q2"> Massive Nasdaq Quote</label>
+      </div>
+      <div class="quiz-q" data-correct="0">
+        <div class="q-text">Q3: Why is MNQ good for beginners?</div>
+        <label><input type="radio" name="d1q3"> It's small (1/10th size) so less risk</label>
+        <label><input type="radio" name="d1q3"> It only goes up</label>
+        <label><input type="radio" name="d1q3"> The government insures it</label>
+      </div>
+    </div>
+
+    <button class="day-complete" onclick="markDay(1)">✓ Mark Day 1 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 2 -->
+<section id="day2" class="day" data-day="2">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">2</div>
+    <div>
+      <div class="day-title">Reading a candlestick</div>
+      <div class="day-sub">The most important visual in trading · 30 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>What is a candlestick?</h3>
+    <p>A candlestick is a single rectangle (sometimes with lines sticking out the top and bottom) that shows you what happened to price during a specific time period. <strong>One candle = one time period.</strong></p>
+    <p>If you're on a 5-minute chart, each candle = 5 minutes. On a 1-hour chart, each candle = 1 hour. On a 1-day chart, each candle = 1 day.</p>
+
+    <h3>Anatomy of a candle</h3>
+
+    <svg class="diagram" viewBox="0 0 560 320">
+      <rect width="560" height="320" fill="#050510"/>
+
+      <!-- Bullish candle -->
+      <text x="80" y="30" fill="#26a69a" font-size="14" font-weight="bold" text-anchor="middle">BULLISH (UP)</text>
+      <text x="80" y="48" fill="#8a8aa8" font-size="11" text-anchor="middle">close > open</text>
+      <!-- upper wick -->
+      <line x1="80" y1="70" x2="80" y2="100" stroke="#26a69a" stroke-width="2"/>
+      <!-- body -->
+      <rect x="65" y="100" width="30" height="100" fill="#26a69a"/>
+      <!-- lower wick -->
+      <line x1="80" y1="200" x2="80" y2="240" stroke="#26a69a" stroke-width="2"/>
+      <!-- labels -->
+      <text x="110" y="75" fill="#39ff14" font-size="10">HIGH (top wick)</text>
+      <line x1="100" y1="78" x2="85" y2="78" stroke="#39ff14" stroke-width="1"/>
+      <text x="110" y="108" fill="#39ff14" font-size="10">CLOSE</text>
+      <line x1="100" y1="105" x2="95" y2="105" stroke="#39ff14" stroke-width="1"/>
+      <text x="110" y="200" fill="#ff2bd6" font-size="10">OPEN</text>
+      <line x1="100" y1="197" x2="95" y2="197" stroke="#ff2bd6" stroke-width="1"/>
+      <text x="110" y="245" fill="#ef5350" font-size="10">LOW (bottom wick)</text>
+      <line x1="100" y1="242" x2="85" y2="242" stroke="#ef5350" stroke-width="1"/>
+
+      <!-- Bearish candle -->
+      <text x="400" y="30" fill="#ef5350" font-size="14" font-weight="bold" text-anchor="middle">BEARISH (DOWN)</text>
+      <text x="400" y="48" fill="#8a8aa8" font-size="11" text-anchor="middle">close &lt; open</text>
+      <line x1="400" y1="70" x2="400" y2="100" stroke="#ef5350" stroke-width="2"/>
+      <rect x="385" y="100" width="30" height="100" fill="#ef5350"/>
+      <line x1="400" y1="200" x2="400" y2="240" stroke="#ef5350" stroke-width="2"/>
+      <text x="430" y="75" fill="#39ff14" font-size="10">HIGH</text>
+      <line x1="420" y1="78" x2="405" y2="78" stroke="#39ff14" stroke-width="1"/>
+      <text x="430" y="108" fill="#ff2bd6" font-size="10">OPEN</text>
+      <line x1="420" y1="105" x2="415" y2="105" stroke="#ff2bd6" stroke-width="1"/>
+      <text x="430" y="200" fill="#39ff14" font-size="10">CLOSE</text>
+      <line x1="420" y1="197" x2="415" y2="197" stroke="#39ff14" stroke-width="1"/>
+      <text x="430" y="245" fill="#ef5350" font-size="10">LOW</text>
+      <line x1="420" y1="242" x2="405" y2="242" stroke="#ef5350" stroke-width="1"/>
+
+      <text x="280" y="290" fill="#8a8aa8" font-size="11" text-anchor="middle">The body shows where price OPENED and CLOSED.</text>
+      <text x="280" y="305" fill="#8a8aa8" font-size="11" text-anchor="middle">The wicks (lines) show the highest and lowest price during that time period.</text>
+    </svg>
+
+    <h4>The 4 numbers that matter</h4>
+    <p>Every candle has exactly four data points (called <strong>OHLC</strong>):</p>
+    <ul>
+      <li><strong>O = OPEN</strong> — The price when the time period started</li>
+      <li><strong>H = HIGH</strong> — The highest price reached during the period</li>
+      <li><strong>L = LOW</strong> — The lowest price reached</li>
+      <li><strong>C = CLOSE</strong> — The price when the time period ended</li>
+    </ul>
+
+    <h4>Color rules</h4>
+    <ul>
+      <li><strong>Green (or hollow):</strong> Close was HIGHER than open. Bulls won this candle.</li>
+      <li><strong>Red (or filled):</strong> Close was LOWER than open. Bears won.</li>
+    </ul>
+
+    <h3>What candles tell you</h3>
+    <p>Once you can read a single candle, you can read a whole chart. A series of candles tells you a story: who's winning, who's losing, where the action is.</p>
+
+    <div class="tip">
+      <strong>Practice tip:</strong> Open TradingView (after Day 5), pick any chart, and just LOOK at the candles. Don't trade. Just watch a green candle form, then a red one. Get used to seeing them. The patterns will start jumping out.
+    </div>
+
+    <div class="quiz-box">
+      <strong>★ Day 2 Quiz</strong>
+      <div class="quiz-q" data-correct="1">
+        <div class="q-text">Q1: A green candle means...</div>
+        <label><input type="radio" name="d2q1"> The high was above the low</label>
+        <label><input type="radio" name="d2q1"> The close was higher than the open (price went up)</label>
+        <label><input type="radio" name="d2q1"> Lots of volume traded</label>
+      </div>
+      <div class="quiz-q" data-correct="2">
+        <div class="q-text">Q2: What does the wick on top of a candle show?</div>
+        <label><input type="radio" name="d2q2"> The opening price</label>
+        <label><input type="radio" name="d2q2"> The closing price</label>
+        <label><input type="radio" name="d2q2"> The highest price reached during that time period</label>
+      </div>
+      <div class="quiz-q" data-correct="0">
+        <div class="q-text">Q3: On a 15-minute chart, each candle represents...</div>
+        <label><input type="radio" name="d2q3"> 15 minutes of price action</label>
+        <label><input type="radio" name="d2q3"> 15 trades</label>
+        <label><input type="radio" name="d2q3"> 15 dollars of price movement</label>
+      </div>
+    </div>
+
+    <button class="day-complete" onclick="markDay(2)">✓ Mark Day 2 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 3 -->
+<section id="day3" class="day" data-day="3">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">3</div>
+    <div>
+      <div class="day-title">Time frames</div>
+      <div class="day-sub">Why a 5-minute chart looks nothing like a daily chart · 25 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>The same chart, different zooms</h3>
+    <p>The same market — say, MNQ — looks completely different depending on what time frame you're looking at. Think of it like a map: a world map shows continents, a city map shows streets, a building floor plan shows rooms. <strong>It's all the same place. Just different zoom levels.</strong></p>
+
+    <h3>Common time frames</h3>
+    <table>
+      <thead><tr><th>Time frame</th><th>Each candle =</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td>1 minute (1m)</td><td>1 minute</td><td>Scalping (super fast in/out)</td></tr>
+        <tr><td>3 minute (3m)</td><td>3 minutes</td><td>Quick scalps with confirmation</td></tr>
+        <tr><td>5 minute (5m)</td><td>5 minutes</td><td>Day trading entries · YOU WILL USE THIS</td></tr>
+        <tr><td>15 minute (15m)</td><td>15 minutes</td><td>Day trading context · YOU WILL USE THIS</td></tr>
+        <tr><td>1 hour (1h)</td><td>1 hour</td><td>Bias for the day · YOU WILL USE THIS</td></tr>
+        <tr><td>4 hour (4h)</td><td>4 hours</td><td>Multi-day swing trading</td></tr>
+        <tr><td>Daily (D)</td><td>1 day</td><td>Big picture trends</td></tr>
+        <tr><td>Weekly (W)</td><td>1 week</td><td>Long-term investors</td></tr>
+      </tbody>
+    </table>
+
+    <h3>The "top down" approach</h3>
+    <p>Pro traders look at multiple time frames in order, biggest to smallest:</p>
+    <ol>
+      <li><strong>Start with the 1-hour or 4-hour</strong> — what's the big picture? Is the market trending up, down, or sideways?</li>
+      <li><strong>Drop to the 15-minute</strong> — where are the key levels and zones today?</li>
+      <li><strong>Drop to the 5-minute</strong> — find your exact entry trigger</li>
+    </ol>
+    <p>This is called "top-down analysis." It keeps you from making dumb trades against the bigger trend.</p>
+
+    <div class="info">
+      <strong>Rule of thumb:</strong> Trade WITH the higher time frame, not against it. If the 1-hour says "going down," you should be looking for shorts, not longs, on the 5-minute.
+    </div>
+
+    <div class="quiz-box">
+      <strong>★ Day 3 Quiz</strong>
+      <div class="quiz-q" data-correct="2">
+        <div class="q-text">Q1: Top-down analysis means...</div>
+        <label><input type="radio" name="d3q1"> Looking at the chart upside down</label>
+        <label><input type="radio" name="d3q1"> Starting with the 1-minute and zooming out</label>
+        <label><input type="radio" name="d3q1"> Starting with bigger time frames and zooming in</label>
+      </div>
+      <div class="quiz-q" data-correct="0">
+        <div class="q-text">Q2: What's a 5m candle made of?</div>
+        <label><input type="radio" name="d3q2"> 5 minutes of price action</label>
+        <label><input type="radio" name="d3q2"> 5 trades</label>
+        <label><input type="radio" name="d3q2"> 5 hours of price action</label>
+      </div>
+      <div class="quiz-q" data-correct="1">
+        <div class="q-text">Q3: If the 1-hour trend is DOWN, you should look for...</div>
+        <label><input type="radio" name="d3q3"> Long entries on the 5-minute</label>
+        <label><input type="radio" name="d3q3"> Short entries on the 5-minute</label>
+        <label><input type="radio" name="d3q3"> Coffee</label>
+      </div>
+    </div>
+
+    <button class="day-complete" onclick="markDay(3)">✓ Mark Day 3 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 4 -->
+<section id="day4" class="day" data-day="4">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">4</div>
+    <div>
+      <div class="day-title">What makes price move?</div>
+      <div class="day-sub">Buyers, sellers, and supply/demand · 25 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>The simplest possible explanation</h3>
+    <p>Price goes up when more people want to BUY than SELL. Price goes down when more people want to SELL than BUY. <strong>That's the entire mechanism.</strong></p>
+
+    <h3>Who's actually trading?</h3>
+    <ul>
+      <li><strong>Banks and hedge funds</strong> — by far the biggest movers. Trade in millions of dollars per click.</li>
+      <li><strong>Algorithmic traders</strong> — computer programs that buy/sell based on pre-set rules. Most volume on any given day.</li>
+      <li><strong>Retail traders</strong> — that's us. Individual humans clicking buttons. We're tiny in the grand scheme.</li>
+    </ul>
+
+    <p>Our edge as small retail traders isn't size or speed — it's <strong>flexibility</strong>. We can sit out 95% of the day and only trade when the setup is screaming at us. Big institutions HAVE to trade. We don't.</p>
+
+    <h3>What moves MNQ specifically</h3>
+    <ul>
+      <li><strong>Big tech earnings</strong> (Apple, Microsoft, Nvidia, Google, Amazon, Meta, Tesla) — these companies dominate the Nasdaq-100</li>
+      <li><strong>Federal Reserve announcements</strong> (FOMC meetings, every 6 weeks) — interest rate decisions move EVERYTHING</li>
+      <li><strong>Economic data</strong> (CPI inflation, jobs reports) — released at 8:30 AM ET on schedule</li>
+      <li><strong>Pre-market news</strong> — anything that happens before 9:30 AM ET cash open</li>
+      <li><strong>Random Tuesday</strong> — sometimes the market just moves and nobody knows why</li>
+    </ul>
+
+    <div class="warn">
+      <strong>Don't trade during news events.</strong> When CPI or FOMC drops, price can move 50-100 points in 5 seconds. That's enough to blow through any stop loss you set. Sit out and watch.
+    </div>
+
+    <div class="quiz-box">
+      <strong>★ Day 4 Quiz</strong>
+      <div class="quiz-q" data-correct="0">
+        <div class="q-text">Q1: Price goes UP when...</div>
+        <label><input type="radio" name="d4q1"> More buyers than sellers</label>
+        <label><input type="radio" name="d4q1"> The Fed says so</label>
+        <label><input type="radio" name="d4q1"> Volume increases</label>
+      </div>
+      <div class="quiz-q" data-correct="2">
+        <div class="q-text">Q2: Our edge as retail traders is...</div>
+        <label><input type="radio" name="d4q2"> Speed</label>
+        <label><input type="radio" name="d4q2"> Size</label>
+        <label><input type="radio" name="d4q2"> Flexibility — we can wait for great setups</label>
+      </div>
+      <div class="quiz-q" data-correct="1">
+        <div class="q-text">Q3: When should you trade during a Fed announcement?</div>
+        <label><input type="radio" name="d4q3"> 30 seconds before</label>
+        <label><input type="radio" name="d4q3"> Never. Sit out and watch.</label>
+        <label><input type="radio" name="d4q3"> All day long</label>
+      </div>
+    </div>
+
+    <button class="day-complete" onclick="markDay(4)">✓ Mark Day 4 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 5 -->
+<section id="day5" class="day" data-day="5">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">5</div>
+    <div>
+      <div class="day-title">Setting up TradingView (free account)</div>
+      <div class="day-sub">Step-by-step setup · 45 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>What is TradingView?</h3>
+    <p>TradingView is the website you'll use to look at charts, draw lines, and place test trades. Most traders use it. The free version is plenty for what you need to start.</p>
+
+    <h3>Step-by-step setup</h3>
+    <ol>
+      <li>Go to <code>tradingview.com</code></li>
+      <li>Click "Sign up" in the top right</li>
+      <li>Use Google or email — pick a username you'll remember</li>
+      <li>Confirm your email</li>
+      <li>You're in. Skip any "upgrade to Pro" prompts — the free plan is fine for now.</li>
+    </ol>
+
+    <h3>Open MNQ for the first time</h3>
+    <ol>
+      <li>Click the search box at the top</li>
+      <li>Type <code>MNQ1!</code> and hit Enter (the <code>1!</code> means "current front-month contract")</li>
+      <li>You should see a chart of MNQ open up</li>
+      <li>In the bottom-left, change the time frame to <strong>15</strong> (15-minute chart)</li>
+      <li>Right-click the chart → "Settings" → "Symbol" tab → make sure "Extended hours" is ON. This shows pre-market and after-hours sessions.</li>
+    </ol>
+
+    <h3>Add the Quebic Labs SMC Suite indicator</h3>
+    <p>Justin will give you the indicator code. Once you have it:</p>
+    <ol>
+      <li>At the bottom of the TradingView screen, click the <strong>Pine Editor</strong> tab</li>
+      <li>Delete whatever's in there</li>
+      <li>Paste the QL SMC Suite code</li>
+      <li>Click <strong>Save</strong> in the top right of the editor → name it "Quebic SMC"</li>
+      <li>Click <strong>Add to chart</strong></li>
+      <li>You should now see colored boxes, lines, and labels appearing on the chart</li>
+    </ol>
+
+    <h3>Save it as a layout</h3>
+    <ol>
+      <li>Top-right of the chart, click the cloud icon ("Layout")</li>
+      <li>Click "Save as..." → name it "MNQ - 15m main"</li>
+      <li>Now whenever you log in, you can load this exact setup with one click</li>
+    </ol>
+
+    <div class="tip">
+      <strong>Free account limits:</strong> You can only have 2 indicators per chart on the free plan. The Quebic SMC Suite counts as ONE indicator (because it does 9 things in one slot). That leaves you 1 slot for VWAP or whatever else.
+    </div>
+
+    <div class="quiz-box">
+      <strong>★ Day 5 Quiz</strong>
+      <div class="quiz-q" data-correct="0">
+        <div class="q-text">Q1: How many indicators can you add on a free TradingView account?</div>
+        <label><input type="radio" name="d5q1"> 2 per chart</label>
+        <label><input type="radio" name="d5q1"> 10 per chart</label>
+        <label><input type="radio" name="d5q1"> Unlimited</label>
+      </div>
+      <div class="quiz-q" data-correct="1">
+        <div class="q-text">Q2: To find MNQ in TradingView, you type...</div>
+        <label><input type="radio" name="d5q2"> NASDAQ</label>
+        <label><input type="radio" name="d5q2"> MNQ1!</label>
+        <label><input type="radio" name="d5q2"> APPLE</label>
+      </div>
+    </div>
+
+    <button class="day-complete" onclick="markDay(5)">✓ Mark Day 5 Complete</button>
+  </div>
+</section>
+
+<!-- ═══════════════ WEEK 2: FUTURES & MNQ ═══════════════ -->
+
+<!-- DAY 6 -->
+<section id="day6" class="day" data-day="6">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">6</div>
+    <div>
+      <div class="day-title">Why futures, not stocks?</div>
+      <div class="day-sub">Week 2: Futures & MNQ · 25 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>The big differences</h3>
+    <table>
+      <thead><tr><th></th><th>Stocks</th><th>Futures (MNQ)</th></tr></thead>
+      <tbody>
+        <tr><td>Trading hours</td><td>9:30 AM – 4 PM ET</td><td>23 hours/day, Sunday 6 PM – Friday 5 PM</td></tr>
+        <tr><td>Min account</td><td>$25,000 (PDT rule)</td><td>$500 or less</td></tr>
+        <tr><td>Day trade limit</td><td>3 per 5 days under $25K</td><td>Unlimited</td></tr>
+        <tr><td>Short selling</td><td>Hard, requires margin</td><td>Easy, just click sell</td></tr>
+        <tr><td>Leverage</td><td>2:1 (cash) or 4:1 (margin)</td><td>20:1 to 50:1</td></tr>
+        <tr><td>Tax treatment</td><td>Short-term gains</td><td>60/40 split (tax advantage)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>The key advantage: PDT rule does not apply</h3>
+    <p>Stocks have something called the <strong>Pattern Day Trader (PDT) rule</strong>. If you have less than $25,000 in your stock account and you make 4+ day trades in 5 business days, your broker locks your account. <strong>Futures don't have this rule.</strong> You can day trade with a $500 account if you want.</p>
+
+    <h3>The trade-off: leverage cuts both ways</h3>
+    <p>One MNQ contract controls $50,000+ worth of Nasdaq stocks with only ~$50 of margin. That's amazing on the way up — and brutal on the way down. <strong>This is why risk management is the entire game</strong>, not picking direction.</p>
+
+    <div class="warn">
+      <strong>Leverage can blow your account in 5 minutes.</strong> A 50-point move on MNQ is $100. A 250-point move is $500. We've seen 250-point moves in 10 minutes during news events. If you don't have a stop loss, you can lose your entire account on one bad trade. We'll cover stops on Day 12.
+    </div>
+
+    <div class="quiz-box">
+      <strong>★ Day 6 Quiz</strong>
+      <div class="quiz-q" data-correct="2">
+        <div class="q-text">Q1: The PDT rule says...</div>
+        <label><input type="radio" name="d6q1"> You can only trade on Tuesdays</label>
+        <label><input type="radio" name="d6q1"> You need a license</label>
+        <label><input type="radio" name="d6q1"> Stock accounts under $25K can only do 3 day trades per 5 days</label>
+      </div>
+      <div class="quiz-q" data-correct="1">
+        <div class="q-text">Q2: The biggest risk of leverage is...</div>
+        <label><input type="radio" name="d6q2"> The math is hard</label>
+        <label><input type="radio" name="d6q2"> Small price moves = big dollar moves in your account</label>
+        <label><input type="radio" name="d6q2"> Brokers charge more</label>
+      </div>
+    </div>
+
+    <button class="day-complete" onclick="markDay(6)">✓ Mark Day 6 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 7 -->
+<section id="day7" class="day" data-day="7">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">7</div>
+    <div>
+      <div class="day-title">Minis vs Micros · The math you MUST know</div>
+      <div class="day-sub">$2 vs $20 per point · 30 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>The two sizes of Nasdaq futures</h3>
+    <p>The CME (Chicago Mercantile Exchange) offers two versions of the Nasdaq-100 future:</p>
+    <table>
+      <thead><tr><th>Symbol</th><th>Name</th><th>Per point</th><th>Per tick</th><th>Tick size</th></tr></thead>
+      <tbody>
+        <tr><td><strong>NQ</strong></td><td>E-mini Nasdaq</td><td>$20</td><td>$5</td><td>0.25 pts</td></tr>
+        <tr><td><strong>MNQ</strong></td><td>Micro E-mini Nasdaq</td><td>$2</td><td>$0.50</td><td>0.25 pts</td></tr>
+      </tbody>
+    </table>
+    <p><strong>MNQ is exactly 1/10th the size of NQ.</strong> Same chart. Same price. Same hours. Just less money on the line per point.</p>
+
+    <h3>The math you NEED to memorize</h3>
+    <div class="info">
+      <strong>For MNQ:</strong>
+      <ul>
+        <li>1 point = $2 per contract</li>
+        <li>1 tick = $0.50 per contract (4 ticks per point)</li>
+        <li>10 points = $20 per contract</li>
+        <li>50 points = $100 per contract</li>
+        <li>100 points = $200 per contract</li>
+      </ul>
+    </div>
+
+    <h3>Real example</h3>
+    <p>Let's say MNQ is trading at 25,800. You go LONG (buy) 1 contract.</p>
+    <ul>
+      <li>If price goes to 25,810 (+10 points) → +$20</li>
+      <li>If price goes to 25,830 (+30 points) → +$60</li>
+      <li>If price goes to 25,750 (−50 points) → −$100</li>
+    </ul>
+
+    <h3>Why we use MNQ as beginners</h3>
+    <p>The dollar math is small enough that mistakes don't ruin you. A 50-point loss on MNQ = $100. A 50-point loss on NQ = $1,000. <strong>We'd rather you learn with $100 mistakes, not $1,000 ones.</strong></p>
+
+    <div class="tip">
+      <strong>Pro move:</strong> Once you're consistently profitable on 1 MNQ contract, the next step isn't to jump to NQ. The next step is to trade 2 MNQ. Then 3. Scale gradually. There's no medal for using the bigger contract.
+    </div>
+
+    <div class="quiz-box">
+      <strong>★ Day 7 Quiz</strong>
+      <div class="quiz-q" data-correct="1">
+        <div class="q-text">Q1: 1 point on MNQ = ?</div>
+        <label><input type="radio" name="d7q1"> $20</label>
+        <label><input type="radio" name="d7q1"> $2</label>
+        <label><input type="radio" name="d7q1"> $0.50</label>
+      </div>
+      <div class="quiz-q" data-correct="0">
+        <div class="q-text">Q2: If MNQ moves 25 points against your 1 contract, you lose...</div>
+        <label><input type="radio" name="d7q2"> $50</label>
+        <label><input type="radio" name="d7q2"> $25</label>
+        <label><input type="radio" name="d7q2"> $200</label>
+      </div>
+      <div class="quiz-q" data-correct="2">
+        <div class="q-text">Q3: 1 tick on MNQ = ?</div>
+        <label><input type="radio" name="d7q3"> 1 point</label>
+        <label><input type="radio" name="d7q3"> $1</label>
+        <label><input type="radio" name="d7q3"> $0.50 (and 0.25 points)</label>
+      </div>
+    </div>
+
+    <button class="day-complete" onclick="markDay(7)">✓ Mark Day 7 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 8 -->
+<section id="day8" class="day" data-day="8">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">8</div>
+    <div>
+      <div class="day-title">Trading hours & sessions</div>
+      <div class="day-sub">When the market actually moves · 30 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>MNQ trades almost 24 hours, but volume is concentrated</h3>
+    <p>The market is technically open Sunday 6 PM ET through Friday 5 PM ET (closed for an hour each day). But not all hours are equal. Volume — and therefore opportunity and risk — is concentrated in three main sessions:</p>
+
+    <svg class="diagram" viewBox="0 0 560 200">
+      <rect width="560" height="200" fill="#050510"/>
+      <text x="20" y="25" fill="#00fff0" font-size="13" font-family="monospace">DAILY SESSION TIMELINE (NY TIME)</text>
+
+      <!-- timeline bar -->
+      <rect x="20" y="60" width="520" height="40" fill="#14142a" stroke="#2a2a4a"/>
+      <!-- asian -->
+      <rect x="20" y="60" width="100" height="40" fill="rgba(255,235,59,0.35)"/>
+      <text x="70" y="85" fill="#ffeb3b" font-size="11" text-anchor="middle">ASIAN</text>
+      <!-- london -->
+      <rect x="120" y="60" width="180" height="40" fill="rgba(3,169,244,0.35)"/>
+      <text x="210" y="85" fill="#03a9f4" font-size="11" text-anchor="middle">LONDON</text>
+      <!-- ny -->
+      <rect x="220" y="60" width="200" height="40" fill="rgba(76,175,80,0.35)"/>
+      <text x="370" y="85" fill="#4caf50" font-size="11" text-anchor="middle">NY</text>
+
+      <!-- time marks -->
+      <text x="20" y="130" fill="#8a8aa8" font-size="9" text-anchor="middle">8 PM</text>
+      <text x="120" y="130" fill="#8a8aa8" font-size="9" text-anchor="middle">3 AM</text>
+      <text x="220" y="130" fill="#8a8aa8" font-size="9" text-anchor="middle">9:30 AM</text>
+      <text x="320" y="130" fill="#8a8aa8" font-size="9" text-anchor="middle">12 PM</text>
+      <text x="420" y="130" fill="#8a8aa8" font-size="9" text-anchor="middle">4 PM</text>
+      <text x="540" y="130" fill="#8a8aa8" font-size="9" text-anchor="middle">8 PM</text>
+
+      <text x="280" y="165" fill="#39ff14" font-size="11" text-anchor="middle">★ NY AM Killzone (7-10 AM) = where 60% of the day's range happens</text>
+      <text x="280" y="185" fill="#ffeb3b" font-size="10" text-anchor="middle">For Stevey: focus on Asian session 8-10 PM ET (calmer, easier to learn)</text>
+    </svg>
+
+    <h3>The three big sessions</h3>
+    <ul>
+      <li><strong style="color: #ffeb3b;">ASIAN (8 PM – 5 AM ET)</strong> — Calmest. Tight ranges. <strong>This is where Stevey will start.</strong> Less volatility = easier to learn without getting stopped out.</li>
+      <li><strong style="color: #03a9f4;">LONDON (3 AM – 12 PM ET)</strong> — Trends usually start here. London often "fakes out" the Asian range before reversing.</li>
+      <li><strong style="color: #4caf50;">NEW YORK (9:30 AM – 4 PM ET)</strong> — Highest volume of the day. Cash stocks open at 9:30. The first hour (9:30–10:30) is where most of the action is.</li>
+    </ul>
+
+    <h3>Why we focus on Asian session for Stevey</h3>
+    <ul>
+      <li><strong>Lower volatility</strong> — moves are smaller, stops can be tighter</li>
+      <li><strong>Less news risk</strong> — most US economic data drops 8:30 AM ET, not during Asian hours</li>
+      <li><strong>Better for learning</strong> — you can think clearly without price ripping 50 points in 30 seconds</li>
+      <li><strong>Stevey's schedule</strong> — Vegas time is PT, Asian session = 5 PM – 2 AM PT, perfect after-work hours</li>
+    </ul>
+
+    <div class="info">
+      <strong>Asian session strategy in one sentence:</strong> Wait for the range to form (first 2-3 hours), then trade fades back to the middle when price reaches the edges of the range. Boring. Predictable. Profitable.
+    </div>
+
+    <div class="quiz-box">
+      <strong>★ Day 8 Quiz</strong>
+      <div class="quiz-q" data-correct="0">
+        <div class="q-text">Q1: When is the Asian session in NY time?</div>
+        <label><input type="radio" name="d8q1"> 8 PM – 5 AM ET</label>
+        <label><input type="radio" name="d8q1"> 9 AM – 5 PM ET</label>
+        <label><input type="radio" name="d8q1"> 12 AM – 12 PM ET</label>
+      </div>
+      <div class="quiz-q" data-correct="2">
+        <div class="q-text">Q2: Why is Asian session good for beginners?</div>
+        <label><input type="radio" name="d8q2"> The market is closed</label>
+        <label><input type="radio" name="d8q2"> It's the most volatile</label>
+        <label><input type="radio" name="d8q2"> Lower volatility, less news risk, calmer pace</label>
+      </div>
+    </div>
+
+    <button class="day-complete" onclick="markDay(8)">✓ Mark Day 8 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 9 -->
+<section id="day9" class="day" data-day="9">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">9</div>
+    <div>
+      <div class="day-title">Bid, ask, spread, and slippage</div>
+      <div class="day-sub">The hidden costs of trading · 25 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>Every market has TWO prices</h3>
+    <p>When you look at a quote, you don't see one price — you see two:</p>
+    <ul>
+      <li><strong>BID</strong> — The highest price someone is willing to buy at right now</li>
+      <li><strong>ASK</strong> (or "offer") — The lowest price someone is willing to sell at right now</li>
+    </ul>
+    <p>The difference between them is the <strong>spread</strong>. On MNQ, the spread is usually 1 tick ($0.50). That means every time you enter a trade, you're already starting at a $0.50 loss.</p>
+
+    <h3>How orders fill</h3>
+    <ul>
+      <li>If you BUY at market, you pay the <strong>ASK</strong> (the higher price)</li>
+      <li>If you SELL at market, you receive the <strong>BID</strong> (the lower price)</li>
+      <li>You can also place a <strong>LIMIT</strong> order — "I'll only buy if price comes down to X" — but it might not fill</li>
+    </ul>
+
+    <h3>Slippage</h3>
+    <p>Slippage is when the price moves between when you click the button and when the order actually fills. On MNQ, slippage is usually 0-1 tick during normal hours and 5-20+ ticks during news events. <strong>This is another reason not to trade during news.</strong></p>
+
+    <div class="warn">
+      <strong>Stops can slip too.</strong> If you set a stop loss at 25,750 and there's a fast move, you might get filled at 25,745 or worse. This is why we don't trade right before economic data drops — slippage on stops can be brutal.
+    </div>
+
+    <div class="quiz-box">
+      <strong>★ Day 9 Quiz</strong>
+      <div class="quiz-q" data-correct="1">
+        <div class="q-text">Q1: When you BUY at market, you pay the...</div>
+        <label><input type="radio" name="d9q1"> BID</label>
+        <label><input type="radio" name="d9q1"> ASK</label>
+        <label><input type="radio" name="d9q1"> Average of both</label>
+      </div>
+      <div class="quiz-q" data-correct="0">
+        <div class="q-text">Q2: Slippage is...</div>
+        <label><input type="radio" name="d9q2"> Price moving between order click and fill</label>
+        <label><input type="radio" name="d9q2"> A type of margin call</label>
+        <label><input type="radio" name="d9q2"> When you slip on the floor</label>
+      </div>
+    </div>
+
+    <button class="day-complete" onclick="markDay(9)">✓ Mark Day 9 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 10 -->
+<section id="day10" class="day" data-day="10">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">10</div>
+    <div>
+      <div class="day-title">Practice: spend 30 min just LOOKING at MNQ</div>
+      <div class="day-sub">No trades. No analysis. Just pattern recognition. · 30 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>Today's homework</h3>
+    <p>Open TradingView. Open MNQ on the 5-minute chart. <strong>For 30 minutes, just watch.</strong> Don't trade. Don't try to predict. Just notice things:</p>
+    <ul>
+      <li>How long does it take for one candle to form?</li>
+      <li>When you see a green candle, what does the next one usually do?</li>
+      <li>Where are the wicks longer — top or bottom?</li>
+      <li>What time of day is the chart most active vs least active?</li>
+      <li>How fast does price move during a 5-minute candle vs how slow during a quiet one?</li>
+    </ul>
+
+    <h3>This is the most important day of week 1</h3>
+    <p>Trading is pattern recognition. You can't pattern-recognize what you haven't seen 1,000 times. <strong>Today is your first 30 minutes of the 1,000.</strong></p>
+
+    <div class="tip">
+      <strong>Stevey homework:</strong> Do this every night at 8 PM ET (5 PM your time) for the rest of week 2. By Day 14 you'll start seeing things you couldn't see on Day 10. That's not magic — that's how brains work.
+    </div>
+
+    <h3>Things to write down in your journal</h3>
+    <ol>
+      <li>What time did you watch?</li>
+      <li>Was it Asian session yet?</li>
+      <li>Did price seem to be trending or chopping sideways?</li>
+      <li>Any candles that surprised you?</li>
+      <li>Any times you would have wanted to enter a trade? (don't actually — just note it)</li>
+    </ol>
+
+    <button class="day-complete" onclick="markDay(10)">✓ Mark Day 10 Complete</button>
+  </div>
+</section>
+
+<!-- ═══════════════ WEEK 3: RISK MANAGEMENT ═══════════════ -->
+
+<!-- DAY 11 -->
+<section id="day11" class="day" data-day="11">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">11</div>
+    <div>
+      <div class="day-title">The 1% rule (this is the most important lesson)</div>
+      <div class="day-sub">Week 3: Risk Management · 30 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>The single rule that keeps you in the game</h3>
+    <p><strong>NEVER risk more than 1% of your account on a single trade.</strong></p>
+    <p>Read it again. Memorize it. This rule is more important than any setup, any indicator, any strategy you'll learn.</p>
+
+    <h3>Why 1%?</h3>
+    <p>Because you WILL have losing streaks. Even great traders lose 5 trades in a row sometimes. Math:</p>
+    <table>
+      <thead><tr><th>Risk per trade</th><th>10 losses in a row</th><th>20 losses in a row</th></tr></thead>
+      <tbody>
+        <tr><td>1%</td><td>−10% (recoverable)</td><td>−18% (annoying but fine)</td></tr>
+        <tr><td>2%</td><td>−18%</td><td>−33%</td></tr>
+        <tr><td>5%</td><td>−40%</td><td>−64%</td></tr>
+        <tr><td>10%</td><td>−65%</td><td>−88% (account dead)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>What does 1% look like in dollars?</h3>
+    <ul>
+      <li>$500 account: $5 per trade</li>
+      <li>$1,000 account: $10 per trade</li>
+      <li>$5,000 account: $50 per trade</li>
+      <li>$10,000 account: $100 per trade</li>
+      <li>$25,000 account: $250 per trade (this is the prop firm size)</li>
+    </ul>
+
+    <h3>How this controls position size</h3>
+    <p>Your stop loss distance × MNQ point value × number of contracts = total risk.</p>
+    <p><strong>Example:</strong> $5,000 account, 1% rule = $50 max risk. If your stop is 25 points away from entry, that's 25 × $2 = $50 per contract. So you can trade 1 MNQ. If your stop is 50 points away, that's $100 per contract — you can't even trade 1 contract without breaking the rule. Either tighten the stop or skip the trade.</p>
+
+    <div class="warn">
+      <strong>The killer mistake:</strong> "I'll just use a wider stop this time, it's a special setup." NO. Stop = 1% of account. Always. If the setup needs a wider stop, you don't take it. Period.
+    </div>
+
+    <button class="day-complete" onclick="markDay(11)">✓ Mark Day 11 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 12 -->
+<section id="day12" class="day" data-day="12">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">12</div>
+    <div>
+      <div class="day-title">Stop losses · what, why, how</div>
+      <div class="day-sub">The single most important order type · 30 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>What is a stop loss?</h3>
+    <p>A stop loss is an order you place at the same time as your trade that says <strong>"if price moves against me to THIS level, sell automatically."</strong> It's the brake on your car.</p>
+
+    <h3>Why every trade needs one</h3>
+    <ol>
+      <li><strong>You can't watch the screen 100% of the time.</strong> Network drops, you go pee, the cat steps on the keyboard. Stops protect you when you can't react.</li>
+      <li><strong>Emotions lie.</strong> When a trade goes against you, your brain will say "it'll come back." It might not. Stops execute without asking your brain.</li>
+      <li><strong>It defines your risk before you enter.</strong> Without a stop, your max loss is "all your money." With a stop, your max loss is a number you chose.</li>
+    </ol>
+
+    <h3>How to place a stop</h3>
+    <p>For a LONG trade, your stop goes BELOW your entry. For a SHORT trade, your stop goes ABOVE.</p>
+
+    <svg class="diagram" viewBox="0 0 560 280">
+      <rect width="560" height="280" fill="#050510"/>
+      <text x="280" y="25" fill="#00fff0" font-size="13" font-weight="bold" text-anchor="middle">LONG TRADE: STOP BELOW · TARGET ABOVE</text>
+
+      <!-- entry line -->
+      <line x1="60" y1="150" x2="500" y2="150" stroke="#00fff0" stroke-width="2" stroke-dasharray="6,3"/>
+      <text x="510" y="155" fill="#00fff0" font-size="11">ENTRY 25,800</text>
+
+      <!-- stop line -->
+      <line x1="60" y1="220" x2="500" y2="220" stroke="#ef5350" stroke-width="2" stroke-dasharray="6,3"/>
+      <text x="510" y="225" fill="#ef5350" font-size="11">STOP 25,775 (-25 = -$50)</text>
+
+      <!-- target line -->
+      <line x1="60" y1="60" x2="500" y2="60" stroke="#39ff14" stroke-width="2" stroke-dasharray="6,3"/>
+      <text x="510" y="65" fill="#39ff14" font-size="11">TARGET 25,850 (+50 = +$100)</text>
+
+      <!-- candles -->
+      <line x1="100" y1="170" x2="100" y2="200" stroke="#ef5350"/>
+      <rect x="92" y="175" width="16" height="20" fill="#ef5350"/>
+      <line x1="140" y1="160" x2="140" y2="190" stroke="#ef5350"/>
+      <rect x="132" y="165" width="16" height="20" fill="#ef5350"/>
+      <line x1="180" y1="150" x2="180" y2="180" stroke="#26a69a"/>
+      <rect x="172" y="155" width="16" height="20" fill="#26a69a"/>
+      <line x1="220" y1="130" x2="220" y2="160" stroke="#26a69a"/>
+      <rect x="212" y="135" width="16" height="20" fill="#26a69a"/>
+      <line x1="260" y1="100" x2="260" y2="140" stroke="#26a69a"/>
+      <rect x="252" y="110" width="16" height="25" fill="#26a69a"/>
+      <line x1="300" y1="80" x2="300" y2="115" stroke="#26a69a"/>
+      <rect x="292" y="85" width="16" height="25" fill="#26a69a"/>
+      <line x1="340" y1="65" x2="340" y2="95" stroke="#26a69a"/>
+      <rect x="332" y="70" width="16" height="20" fill="#26a69a"/>
+      <line x1="380" y1="55" x2="380" y2="80" stroke="#26a69a"/>
+      <rect x="372" y="58" width="16" height="20" fill="#39ff14"/>
+
+      <text x="100" y="260" fill="#8a8aa8" font-size="10" text-anchor="middle">enter</text>
+      <text x="380" y="260" fill="#39ff14" font-size="10" text-anchor="middle">target hit</text>
+
+      <text x="280" y="40" fill="#8a8aa8" font-size="10" text-anchor="middle">Risk = 25 pts ($50) · Reward = 50 pts ($100) · 1:2 R:R</text>
+    </svg>
+
+    <h3>The 4 types of stops</h3>
+    <ul>
+      <li><strong>Hard stop:</strong> Order placed with the broker. Executes automatically. <strong>Always use these.</strong></li>
+      <li><strong>Mental stop:</strong> "I'll exit when price hits X." <strong>Don't do this.</strong> You will not exit.</li>
+      <li><strong>Trailing stop:</strong> Stop that moves with you as price moves in your favor. Locks in profits.</li>
+      <li><strong>Time stop:</strong> "If this trade isn't working in 20 minutes, I exit." Useful for fades.</li>
+    </ul>
+
+    <button class="day-complete" onclick="markDay(12)">✓ Mark Day 12 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 13 -->
+<section id="day13" class="day" data-day="13">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">13</div>
+    <div>
+      <div class="day-title">Take profit zones</div>
+      <div class="day-sub">Where to lock in winners · 25 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>The opposite of a stop</h3>
+    <p>A <strong>take profit (TP)</strong> is an order that automatically closes your trade when price reaches a level in your favor. It locks in your win.</p>
+
+    <h3>Where to put your TP</h3>
+    <ol>
+      <li><strong>At a known level</strong> — previous day high/low, session high/low, a Fair Value Gap, an Order Block. These are places price is likely to react.</li>
+      <li><strong>At a fixed multiple of your stop</strong> — if your stop is 25 points, your TP at 1R = 25 points, 2R = 50 points, 3R = 75 points.</li>
+      <li><strong>At round numbers</strong> — 25,800 / 25,900 / 26,000. These act as magnets and rejection zones.</li>
+    </ol>
+
+    <h3>The "scaling out" strategy</h3>
+    <p>Instead of one big TP, take partial profits at multiple levels:</p>
+    <ul>
+      <li><strong>1R:</strong> Sell HALF your contracts. Move stop to breakeven (your entry price). Now you have a "free trade" — can't lose money.</li>
+      <li><strong>2R:</strong> Sell another quarter. Trail your stop closer.</li>
+      <li><strong>3R+:</strong> Let the rest run with a trailing stop.</li>
+    </ul>
+
+    <div class="info">
+      <strong>This is how the big winners come.</strong> The trader who exits at 1R every time will have a flat P&L. The trader who takes some at 1R, some at 2R, and lets a runner go to 5R is the one who actually makes money.
+    </div>
+
+    <button class="day-complete" onclick="markDay(13)">✓ Mark Day 13 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 14 -->
+<section id="day14" class="day" data-day="14">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">14</div>
+    <div>
+      <div class="day-title">Risk-to-reward (RR) ratios</div>
+      <div class="day-sub">Why you can be wrong half the time and still make money · 25 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>The math that changes everything</h3>
+    <p>R:R = how many points you stand to GAIN vs how many points you stand to LOSE on a trade.</p>
+
+    <svg class="diagram" viewBox="0 0 560 220">
+      <rect width="560" height="220" fill="#050510"/>
+      <text x="280" y="25" fill="#00fff0" font-size="13" font-weight="bold" text-anchor="middle">RISK-TO-REWARD VISUALIZATION</text>
+
+      <!-- 1R -->
+      <text x="60" y="70" fill="#ef5350" font-size="11">1R risk</text>
+      <rect x="60" y="80" width="40" height="40" fill="#ef5350" opacity="0.4"/>
+      <text x="120" y="105" fill="#39ff14" font-size="11">1R reward = 1:1 (break even, need 50% wins)</text>
+
+      <!-- 2R -->
+      <text x="60" y="140" fill="#ef5350" font-size="11">1R risk</text>
+      <rect x="60" y="150" width="40" height="40" fill="#ef5350" opacity="0.4"/>
+      <rect x="120" y="150" width="80" height="40" fill="#39ff14" opacity="0.4"/>
+      <text x="220" y="175" fill="#39ff14" font-size="11">2R reward = 1:2 (need 33% wins to be profitable)</text>
+
+      <!-- 3R -->
+      <text x="60" y="210" fill="#ef5350" font-size="11">1R</text>
+      <rect x="60" y="180" width="40" height="20" fill="#ef5350" opacity="0.4"/>
+      <rect x="120" y="180" width="120" height="20" fill="#39ff14" opacity="0.4"/>
+      <text x="260" y="195" fill="#39ff14" font-size="10">3R reward = 1:3 (need only 25% wins)</text>
+    </svg>
+
+    <h3>The magic of asymmetric bets</h3>
+    <p>If you risk $50 to make $100 (1:2 R:R) and you're right 50% of the time:</p>
+    <ul>
+      <li>10 trades: 5 wins × $100 = +$500</li>
+      <li>5 losses × $50 = −$250</li>
+      <li><strong>Net: +$250</strong></li>
+    </ul>
+    <p>If you risk $50 to make $50 (1:1 R:R) and you're right 50% of the time, you break even (minus fees, you lose).</p>
+
+    <div class="tip">
+      <strong>The rule:</strong> Don't take any trade that's worse than 1:1.5 R:R. Aim for 1:2 minimum. The best setups give you 1:3 or better.
+    </div>
+
+    <button class="day-complete" onclick="markDay(14)">✓ Mark Day 14 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 15 -->
+<section id="day15" class="day" data-day="15">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">15</div>
+    <div>
+      <div class="day-title">Position sizing calculator</div>
+      <div class="day-sub">Use this every single trade · 20 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>How many contracts should you trade?</h3>
+    <p>The answer depends on your account size, your risk tolerance, and where your stop is. <strong>Use the calculator in the Tools section below for every single trade.</strong></p>
+
+    <h3>The formula</h3>
+    <p><code>Max contracts = (account × risk%) ÷ (stop distance × point value)</code></p>
+
+    <h4>Example 1</h4>
+    <ul>
+      <li>Account: $5,000</li>
+      <li>Risk %: 1% = $50</li>
+      <li>Stop distance: 25 points</li>
+      <li>Point value (MNQ): $2</li>
+      <li>$50 ÷ (25 × $2) = $50 ÷ $50 = <strong>1 contract</strong></li>
+    </ul>
+
+    <h4>Example 2</h4>
+    <ul>
+      <li>Account: $10,000</li>
+      <li>Risk %: 1% = $100</li>
+      <li>Stop distance: 20 points</li>
+      <li>$100 ÷ (20 × $2) = $100 ÷ $40 = <strong>2 contracts</strong></li>
+    </ul>
+
+    <h4>Example 3 (DON'T)</h4>
+    <ul>
+      <li>Account: $5,000</li>
+      <li>Risk %: 1% = $50</li>
+      <li>Stop distance: 50 points</li>
+      <li>$50 ÷ (50 × $2) = $50 ÷ $100 = <strong>0.5 contracts</strong></li>
+      <li><strong>You can't trade half a contract.</strong> Either skip the trade or tighten the stop.</li>
+    </ul>
+
+    <button class="day-complete" onclick="markDay(15)">✓ Mark Day 15 Complete</button>
+  </div>
+</section>
+
+<!-- ═══════════════ WEEK 4: SMC & CHARTING ═══════════════ -->
+
+<!-- DAY 16 -->
+<section id="day16" class="day" data-day="16">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">16</div>
+    <div>
+      <div class="day-title">Intro to Smart Money Concepts (SMC)</div>
+      <div class="day-sub">Week 4: SMC & Charting · 30 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>What is SMC?</h3>
+    <p><strong>Smart Money Concepts</strong> is a trading methodology built on the idea that big institutions (banks, hedge funds) leave footprints on the chart when they enter and exit large positions. If you can spot those footprints, you can trade in the same direction as the people moving the market.</p>
+
+    <h3>The footprints we look for</h3>
+    <ul>
+      <li><strong>Fair Value Gaps (FVGs)</strong> — Day 17. A gap left when price moves too fast.</li>
+      <li><strong>Order Blocks (OBs)</strong> — Day 18. The last opposing candle before a big move.</li>
+      <li><strong>Liquidity sweeps</strong> — Wicks that take out swing highs/lows to grab stops.</li>
+      <li><strong>Session levels</strong> — Day 19. Asian/London/NY ranges that act as magnets.</li>
+    </ul>
+
+    <h3>Why does SMC work?</h3>
+    <p>It works because markets are governed by <strong>liquidity</strong>. When a big institution wants to buy 10,000 contracts, they can't just click "buy 10,000" — that would push price way up and they'd pay a terrible average. Instead, they:</p>
+    <ol>
+      <li>Wait for retail traders (us) to put their stops in obvious places (above swing highs)</li>
+      <li>Push price into those stops, triggering them — this creates a flood of sell orders</li>
+      <li>The institution buys all those sell orders quietly at a discount</li>
+      <li>NOW they can let price run higher, with their position already loaded</li>
+    </ol>
+    <p>This is why "the obvious trade" usually fails first, then works. SMC lets you see this pattern coming.</p>
+
+    <button class="day-complete" onclick="markDay(16)">✓ Mark Day 16 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 17 -->
+<section id="day17" class="day" data-day="17">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">17</div>
+    <div>
+      <div class="day-title">Fair Value Gaps (FVG) · the core concept</div>
+      <div class="day-sub">Your indicator highlights these automatically · 35 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>What is an FVG?</h3>
+    <p>A Fair Value Gap is a <strong>3-candle pattern</strong> where price moved so fast that it left an imbalance — a zone where buyers and sellers didn't have time to transact at fair value.</p>
+
+    <div class="grid-2">
+      <div>
+        <h4>Bullish FVG</h4>
+        <p><strong>The low of candle 3 is above the high of candle 1.</strong> Big gap up. Price often comes back to "fill" this gap before continuing higher.</p>
+        <svg class="diagram" viewBox="0 0 320 240">
+          <rect width="320" height="240" fill="#050510"/>
+          <rect x="20" y="100" width="280" height="50" fill="rgba(38,166,154,0.3)" stroke="#26a69a" stroke-width="2" stroke-dasharray="3,3"/>
+          <text x="160" y="130" fill="#26a69a" font-size="12" text-anchor="middle" font-weight="bold">BULLISH FVG</text>
+          <line x1="60" y1="160" x2="60" y2="200" stroke="#26a69a" stroke-width="1"/>
+          <rect x="50" y="170" width="20" height="25" fill="#26a69a"/>
+          <text x="60" y="220" fill="#8a8aa8" font-size="10" text-anchor="middle">1</text>
+          <line x1="160" y1="60" x2="160" y2="180" stroke="#26a69a" stroke-width="1"/>
+          <rect x="150" y="80" width="20" height="100" fill="#26a69a"/>
+          <text x="160" y="220" fill="#8a8aa8" font-size="10" text-anchor="middle">2</text>
+          <line x1="260" y1="40" x2="260" y2="100" stroke="#26a69a" stroke-width="1"/>
+          <rect x="250" y="50" width="20" height="40" fill="#26a69a"/>
+          <text x="260" y="220" fill="#8a8aa8" font-size="10" text-anchor="middle">3</text>
+        </svg>
+      </div>
+      <div>
+        <h4>Bearish FVG</h4>
+        <p><strong>The high of candle 3 is below the low of candle 1.</strong> Big gap down. Price often returns to fill before continuing lower.</p>
+        <svg class="diagram" viewBox="0 0 320 240">
+          <rect width="320" height="240" fill="#050510"/>
+          <rect x="20" y="90" width="280" height="50" fill="rgba(239,83,80,0.3)" stroke="#ef5350" stroke-width="2" stroke-dasharray="3,3"/>
+          <text x="160" y="120" fill="#ef5350" font-size="12" text-anchor="middle" font-weight="bold">BEARISH FVG</text>
+          <line x1="60" y1="40" x2="60" y2="80" stroke="#ef5350" stroke-width="1"/>
+          <rect x="50" y="45" width="20" height="25" fill="#ef5350"/>
+          <text x="60" y="220" fill="#8a8aa8" font-size="10" text-anchor="middle">1</text>
+          <line x1="160" y1="60" x2="160" y2="180" stroke="#ef5350" stroke-width="1"/>
+          <rect x="150" y="70" width="20" height="100" fill="#ef5350"/>
+          <text x="160" y="220" fill="#8a8aa8" font-size="10" text-anchor="middle">2</text>
+          <line x1="260" y1="140" x2="260" y2="200" stroke="#ef5350" stroke-width="1"/>
+          <rect x="250" y="150" width="20" height="40" fill="#ef5350"/>
+          <text x="260" y="220" fill="#8a8aa8" font-size="10" text-anchor="middle">3</text>
+        </svg>
+      </div>
+    </div>
+
+    <h3>How to use FVGs in trades</h3>
+    <ol>
+      <li>The QL SMC indicator marks unfilled FVGs as colored boxes on your chart</li>
+      <li>Wait for price to come BACK to the FVG (not break through, just touch the edge)</li>
+      <li>Look for a reversal candle inside the FVG — wick rejection, engulfing pattern, bullish/bearish close</li>
+      <li>Enter in the direction of the original FVG move</li>
+      <li>Stop loss just outside the opposite edge of the FVG</li>
+      <li>Target: the next FVG in the direction of the trade, or PDH/PDL</li>
+    </ol>
+
+    <h3>HTF FVGs are stronger than LTF FVGs</h3>
+    <p>A 4-hour FVG is much more powerful than a 5-minute FVG. Why? Because it took longer to form, more traders saw it, more orders are stacked at that level. Your indicator shows HTF FVGs as the bigger, more solid colored boxes.</p>
+
+    <div class="tip">
+      <strong>Stevey rule:</strong> Only trade FVGs from 15-minute or higher time frames during your first 30 days. Skip the 5m and 3m FVGs. They're too noisy and you'll get chopped up.
+    </div>
+
+    <button class="day-complete" onclick="markDay(17)">✓ Mark Day 17 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 18 -->
+<section id="day18" class="day" data-day="18">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">18</div>
+    <div>
+      <div class="day-title">Order Blocks</div>
+      <div class="day-sub">The footprint of institutional orders · 25 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>What is an Order Block?</h3>
+    <p>An Order Block is the <strong>last opposing candle before a strong directional move</strong>. The theory: that's where institutions placed their large orders, which is why the market reversed/broke out from there.</p>
+
+    <h3>The 2 types</h3>
+    <ul>
+      <li><strong>Bullish OB (blue boxes):</strong> The last RED (down) candle before a strong move UP that breaks a recent swing high. When price returns to this candle's range, expect a bounce.</li>
+      <li><strong>Bearish OB (purple boxes):</strong> The last GREEN (up) candle before a strong move DOWN that breaks a recent swing low. When price returns to this candle's range, expect rejection.</li>
+    </ul>
+
+    <h3>OB + FVG combo = highest conviction</h3>
+    <p>When an Order Block AND a Fair Value Gap overlap at the same price level, you have the strongest possible setup. Why? Because two independent SMC concepts are pointing at the same zone. <strong>Trade these aggressively.</strong></p>
+
+    <button class="day-complete" onclick="markDay(18)">✓ Mark Day 18 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 19 -->
+<section id="day19" class="day" data-day="19">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">19</div>
+    <div>
+      <div class="day-title">Sessions, killzones, and time-of-day edge</div>
+      <div class="day-sub">When to trade and when to sleep · 25 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>Time of day matters more than most setups</h3>
+    <p>You can have the perfect setup at the wrong time and lose. You can have an okay setup at the right time and win. <strong>Time-of-day edge is real.</strong></p>
+
+    <h3>The 4 killzones</h3>
+    <table>
+      <thead><tr><th>Killzone</th><th>Time (NY)</th><th>What happens</th></tr></thead>
+      <tbody>
+        <tr><td><strong style="color: #ffeb3b;">Asian KZ</strong></td><td>7 PM – 10 PM</td><td>Asian session opens — Stevey's main window</td></tr>
+        <tr><td><strong style="color: #03a9f4;">London KZ</strong></td><td>2 AM – 5 AM</td><td>London opens, sweeps the Asian range</td></tr>
+        <tr><td><strong style="color: #4caf50;">NY AM KZ</strong></td><td>7 AM – 10 AM</td><td>Pre-market run + cash open + first hour. Highest volume.</td></tr>
+        <tr><td><strong style="color: #4caf50;">NY PM KZ</strong></td><td>1:30 PM – 4 PM</td><td>Last 2.5 hours of NY session</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Stevey's window</h3>
+    <p>You'll mostly trade the <strong>Asian Killzone (7-10 PM ET = 4-7 PM PT)</strong>. This is right after work for you. The market is calmer, the moves are smaller, and you can learn without getting your face ripped off.</p>
+
+    <div class="info">
+      <strong>Outside of killzones, sit on your hands.</strong> The market is usually choppy and slow between killzones. You're more likely to lose than win. Practice patience — it's the hardest skill in trading.
+    </div>
+
+    <button class="day-complete" onclick="markDay(19)">✓ Mark Day 19 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 20 -->
+<section id="day20" class="day" data-day="20">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">20</div>
+    <div>
+      <div class="day-title">Reading your indicator like a pro</div>
+      <div class="day-sub">Walking through the QL SMC Suite · 35 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>Indicator legend</h3>
+    <p>Open MNQ in TradingView with the Quebic SMC Suite added. You should see all of these:</p>
+    <ul>
+      <li><strong>Filled colored boxes:</strong> Fair Value Gaps (teal=bullish, red=bearish)</li>
+      <li><strong>Bigger boxes with thick borders:</strong> HTF FVGs (15m, 1h, 4h)</li>
+      <li><strong>Blue boxes labeled "OB":</strong> Bullish Order Blocks</li>
+      <li><strong>Purple boxes labeled "OB":</strong> Bearish Order Blocks</li>
+      <li><strong>Yellow tinted area:</strong> Asian session range</li>
+      <li><strong>Light blue tinted area:</strong> London session range</li>
+      <li><strong>Green tinted area:</strong> NY session range</li>
+      <li><strong>Orange background tint:</strong> You're inside a killzone right now</li>
+      <li><strong>Red horizontal lines:</strong> Previous day high (PDH) and previous day low (PDL)</li>
+      <li><strong>Purple dashed lines:</strong> Previous week high (PWH) and low (PWL)</li>
+      <li><strong>Cyan dotted lines:</strong> NY Opening Range high and low</li>
+    </ul>
+
+    <h3>What you read first</h3>
+    <ol>
+      <li><strong>Are we in a killzone?</strong> (orange tint) → if no, walk away</li>
+      <li><strong>What's the bias?</strong> Check 1h chart. Trend up, down, or sideways?</li>
+      <li><strong>Are there unfilled HTF FVGs nearby?</strong> Those are your magnet zones.</li>
+      <li><strong>Is price near PDH/PDL/PWH/PWL?</strong> Watch for sweeps + reversals.</li>
+      <li><strong>Does the setup line up?</strong> Killzone + bias + FVG/OB at level = trade.</li>
+    </ol>
+
+    <button class="day-complete" onclick="markDay(20)">✓ Mark Day 20 Complete</button>
+  </div>
+</section>
+
+<!-- ═══════════════ WEEK 5: SETUPS & EXECUTION ═══════════════ -->
+
+<!-- DAY 21 -->
+<section id="day21" class="day" data-day="21">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">21</div>
+    <div>
+      <div class="day-title">The Asian Session Strategy (Stevey's bread & butter)</div>
+      <div class="day-sub">Week 5: Setups & Execution · 35 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>The setup</h3>
+    <p>Asian session is range-bound 80% of the time. We exploit the boundaries.</p>
+
+    <h3>Entry rules (Bullish version)</h3>
+    <ol>
+      <li>Wait until 9 PM ET (1 hour into Asian session) so the range is somewhat established</li>
+      <li>Identify the Asian session high and low</li>
+      <li>Watch for price to drop near the Asian session LOW (within ~10 points)</li>
+      <li>Look for a bullish FVG forming on the 5m chart inside that zone</li>
+      <li>Wait for a bullish reversal candle (long lower wick rejecting, or bullish engulfing)</li>
+      <li><strong>Enter LONG</strong> on the close of the reversal candle</li>
+      <li><strong>Stop loss:</strong> 5 points below the Asian session low</li>
+      <li><strong>Target:</strong> Middle of the Asian range (1R), then full Asian high (2R+)</li>
+    </ol>
+
+    <h3>Entry rules (Bearish version)</h3>
+    <p>Same thing, mirrored. Wait for price near Asian high, look for bearish FVG, bearish reversal candle, enter SHORT, stop above Asian high, target Asian middle then low.</p>
+
+    <h3>When NOT to take this trade</h3>
+    <ul>
+      <li>If there's a strong trend already in place — Asian range is broken, this is a breakout day, not a fade day</li>
+      <li>If price has already swept the level and reversed — you're late</li>
+      <li>If you're not in the Asian killzone window</li>
+      <li>If the spread is wide or volume is unusually high (news happening)</li>
+    </ul>
+
+    <button class="day-complete" onclick="markDay(21)">✓ Mark Day 21 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 22 -->
+<section id="day22" class="day" data-day="22">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">22</div>
+    <div>
+      <div class="day-title">Pre-trade checklist</div>
+      <div class="day-sub">Never click buy without running through this · 20 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>Before EVERY trade, run this checklist</h3>
+    <ol>
+      <li>☐ Is it inside a killzone? (orange tint visible)</li>
+      <li>☐ Does the higher time frame agree with my trade direction?</li>
+      <li>☐ Is there a clear setup (FVG, OB, sweep, etc) at this level?</li>
+      <li>☐ Have I defined my entry, stop, AND target before clicking buy?</li>
+      <li>☐ Is the R:R at least 1:2?</li>
+      <li>☐ Have I calculated position size with the risk calculator?</li>
+      <li>☐ Is this trade more than 1% of my account at risk? (if yes, STOP)</li>
+      <li>☐ Is there a news event in the next 30 min? (if yes, STOP)</li>
+      <li>☐ Am I emotionally calm? (if revenge trading, STOP)</li>
+      <li>☐ Will I be able to walk away from the screen for 5 min after entry?</li>
+    </ol>
+    <p><strong>If any answer is NO, don't take the trade.</strong></p>
+
+    <button class="day-complete" onclick="markDay(22)">✓ Mark Day 22 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 23 -->
+<section id="day23" class="day" data-day="23">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">23</div>
+    <div>
+      <div class="day-title">Paper trading — your safe sandbox</div>
+      <div class="day-sub">Practice with fake money · 30 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>What is paper trading?</h3>
+    <p>Paper trading is making fake trades in a real market. You log every trade as if it were real, but no actual money changes hands. <strong>It's how you learn without paying tuition to the market.</strong></p>
+
+    <h3>How to paper trade</h3>
+    <ol>
+      <li>In TradingView, click the "Trading" panel at the bottom</li>
+      <li>Connect to "Paper Trading" (free)</li>
+      <li>You start with $100,000 fake dollars</li>
+      <li>Place trades exactly like you would real ones — same position size, same stops, same targets</li>
+      <li>Log every trade in the journal below</li>
+    </ol>
+
+    <h3>Stevey's paper trading rules</h3>
+    <ul>
+      <li><strong>Paper trade for 5 days minimum</strong> before going live with real money</li>
+      <li>You must have a positive P&L at the end of those 5 days</li>
+      <li>You must have followed your stop loss on EVERY trade</li>
+      <li>You must have journaled every trade</li>
+    </ul>
+
+    <button class="day-complete" onclick="markDay(23)">✓ Mark Day 23 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 24 -->
+<section id="day24" class="day" data-day="24">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">24</div>
+    <div>
+      <div class="day-title">Walk-through: a real Asian session trade</div>
+      <div class="day-sub">Step-by-step example · 35 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>The scenario</h3>
+    <p>It's 8:30 PM ET on a Tuesday. You open MNQ on the 15m chart. Your Quebic SMC indicator is loaded. Asian killzone just started. Here's what you do:</p>
+
+    <ol>
+      <li><strong>Top-down check:</strong> Look at 1h chart. Trend is sideways. No strong bias either way. Good — Asian is usually rangey, this fits.</li>
+      <li><strong>Drop to 15m:</strong> Asian session box is forming. Current high 25,800. Current low 25,770. Range so far: 30 points.</li>
+      <li><strong>Drop to 5m:</strong> Price is near 25,775 — close to the Asian low. Watch closely.</li>
+      <li><strong>Wait:</strong> A 5m candle prints with a long lower wick at 25,768, closing at 25,778. Bullish rejection.</li>
+      <li><strong>Confirm:</strong> Next 5m candle is green, closes at 25,782. Bullish FVG forming.</li>
+      <li><strong>Pre-trade checklist:</strong> Killzone ✓ · Setup ✓ · 1h not against ✓ · No news ✓ · Calm ✓</li>
+      <li><strong>Entry:</strong> 25,782 (close of confirmation candle)</li>
+      <li><strong>Stop:</strong> 25,765 (5 points below Asian low)</li>
+      <li><strong>Risk:</strong> 17 points × $2 = $34 per contract</li>
+      <li><strong>Position size:</strong> $5,000 account × 1% = $50 → can take 1 contract</li>
+      <li><strong>Target 1:</strong> 25,795 (middle of Asian range, +13 pts, ~0.75R) — sell half</li>
+      <li><strong>Target 2:</strong> 25,810 (Asian high + 10, +28 pts, ~1.6R) — let runner go</li>
+      <li><strong>After T1 hits:</strong> Move stop to entry (25,782). Now you can't lose money. Walk away.</li>
+      <li><strong>Result:</strong> Either T2 hits (+$56-50 net) or you exit at breakeven (+$13 net from T1). Both are wins.</li>
+    </ol>
+
+    <h3>This is what every trade should look like</h3>
+    <p>Boring. Methodical. Calm. <strong>If your trades feel exciting, you're doing it wrong.</strong></p>
+
+    <button class="day-complete" onclick="markDay(24)">✓ Mark Day 24 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 25 -->
+<section id="day25" class="day" data-day="25">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">25</div>
+    <div>
+      <div class="day-title">Your first 5 paper trades · do them this week</div>
+      <div class="day-sub">Real practice · 5 days</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>Mission</h3>
+    <p>Take 5 paper trades using the Asian session strategy from Day 21. <strong>One trade per day, max.</strong> No exceptions.</p>
+
+    <h3>For each trade, log in the journal</h3>
+    <ul>
+      <li>Date</li>
+      <li>Entry price</li>
+      <li>Stop loss</li>
+      <li>Target</li>
+      <li>Result (win/loss/breakeven)</li>
+      <li>R:R achieved</li>
+      <li>Notes: what went right? what went wrong?</li>
+    </ul>
+
+    <h3>After 5 trades, score yourself</h3>
+    <ul>
+      <li>Did you follow the checklist every time? (10 points)</li>
+      <li>Did you respect your stop on every trade? (10 points)</li>
+      <li>Did you take more than 1 trade per day? (−5 each time)</li>
+      <li>Did you increase position size after a win? (−10)</li>
+      <li>Did you journal every trade? (10 points)</li>
+    </ul>
+    <p>Score 30+/40 to advance to Day 26. If less, repeat Day 25.</p>
+
+    <button class="day-complete" onclick="markDay(25)">✓ Mark Day 25 Complete</button>
+  </div>
+</section>
+
+<!-- ═══════════════ WEEK 6: PSYCHOLOGY & PROP FIRMS ═══════════════ -->
+
+<!-- DAY 26 -->
+<section id="day26" class="day" data-day="26">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">26</div>
+    <div>
+      <div class="day-title">Trading psychology · why your brain is your worst enemy</div>
+      <div class="day-sub">Week 6: Psychology & Prop Firms · 30 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>The 4 emotions that destroy traders</h3>
+    <ol>
+      <li><strong>Fear of missing out (FOMO)</strong> — "I see a move happening, I have to get in." This is how you enter at the worst possible price.</li>
+      <li><strong>Revenge trading</strong> — "I just lost $50, I need to make it back." This is how $50 becomes $500.</li>
+      <li><strong>Hope</strong> — "It'll come back, I'll just wait." Hope is not a strategy. Hope is what kills accounts.</li>
+      <li><strong>Greed</strong> — "I'm up $80, let me hold for $200." This is how winners turn into losers.</li>
+    </ol>
+
+    <h3>The 4 habits that save you from yourself</h3>
+    <ol>
+      <li><strong>Walk away after entry.</strong> Set your stop and target, then literally close the chart for 5 minutes.</li>
+      <li><strong>One trade per day.</strong> If you take one, you're done. Win or lose. This kills FOMO and revenge.</li>
+      <li><strong>Journal every trade.</strong> Writing it down makes you confront your emotions.</li>
+      <li><strong>Have a hard daily loss limit.</strong> If you lose 2% of your account in a day, log out for 24 hours.</li>
+    </ol>
+
+    <div class="warn">
+      <strong>The truth:</strong> Most traders blow up not because their strategy is bad, but because they can't follow rules when emotions hit. The strategy in this course is good. Whether you make money depends on whether you can resist your own brain.
+    </div>
+
+    <button class="day-complete" onclick="markDay(26)">✓ Mark Day 26 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 27 -->
+<section id="day27" class="day" data-day="27">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">27</div>
+    <div>
+      <div class="day-title">Letting trades play out</div>
+      <div class="day-sub">Patience is the hardest skill · 25 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>The exit obsession</h3>
+    <p>New traders watch every tick after entry. They exit at 1R because they're scared. They exit at -5 points because they "feel" it's wrong. They move stops because they panic. <strong>This is the #1 killer of paper-profitable traders going live.</strong></p>
+
+    <h3>The 3 exit rules</h3>
+    <ol>
+      <li><strong>Set your stop and target before entry.</strong> Don't change them after.</li>
+      <li><strong>Walk away from the screen for 5 minutes after entry.</strong> Set a phone timer. Come back when it goes off.</li>
+      <li><strong>The only valid mid-trade adjustment is moving stop to breakeven AFTER 1R is hit.</strong> Never widen a stop. Never.</li>
+    </ol>
+
+    <h3>The "watch the timeframe" rule</h3>
+    <p>Trading off a 5m chart? Don't watch the 1m. Trading off the 15m? Don't watch the 5m. Watching a smaller timeframe than you traded on will make you panic over noise that doesn't matter.</p>
+
+    <button class="day-complete" onclick="markDay(27)">✓ Mark Day 27 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 28 -->
+<section id="day28" class="day" data-day="28">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">28</div>
+    <div>
+      <div class="day-title">How prop firms work</div>
+      <div class="day-sub">Trading other people's money · 30 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>What is a prop firm?</h3>
+    <p>A "proprietary trading firm" gives you capital to trade with. You don't risk your own money — you risk theirs. In exchange, they take a cut of profits (usually 10-20%). You keep 80-90%.</p>
+
+    <h3>The two-step process</h3>
+    <ol>
+      <li><strong>Evaluation:</strong> You pay an upfront fee (~$100-300) to take an "eval" account. You have to hit a profit target without violating any rules. If you pass, you get a funded account.</li>
+      <li><strong>Funded account:</strong> Now you trade with real firm money. You keep 80-90% of profits. The firm covers losses (up to a limit).</li>
+    </ol>
+
+    <h3>The rules that make you bust</h3>
+    <ul>
+      <li><strong>Profit target:</strong> Hit X% profit to pass</li>
+      <li><strong>Daily loss limit:</strong> Lose more than X% in one day = busted</li>
+      <li><strong>Max drawdown (often trailing):</strong> Total losses can't exceed Y% from peak balance</li>
+      <li><strong>Min trading days:</strong> Must trade at least N days to pass</li>
+      <li><strong>Consistency rule:</strong> No single day can be more than 30-40% of total profit</li>
+      <li><strong>News restrictions:</strong> Many firms ban trading 2 min around major news</li>
+    </ul>
+
+    <h3>Why the trailing drawdown is the killer</h3>
+    <p>If you start at $25,000 with a $1,500 trailing drawdown, your floor starts at $23,500. But every time you make new highs, the floor moves up. You can be net positive overall and still bust because the drawdown trailed your peak. <strong>This is why prop firm traders care more about avoiding losses than maximizing wins.</strong></p>
+
+    <div class="info">
+      <strong>Justin's targeting:</strong> Alpha Futures Zero Plan, $25K eval. We need the exact rules to build a pass plan. Day 29 covers this.
+    </div>
+
+    <button class="day-complete" onclick="markDay(28)">✓ Mark Day 28 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 29 -->
+<section id="day29" class="day" data-day="29">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">29</div>
+    <div>
+      <div class="day-title">Alpha Futures Zero Plan rules & pass strategy</div>
+      <div class="day-sub">The actual game plan · 35 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>What we know about Alpha Futures Zero Plan ($25K)</h3>
+    <p>This will be filled in once Justin pastes the exact rules from the dashboard. General expectations:</p>
+    <ul>
+      <li>Profit target: ~$1,500 (6% of $25K)</li>
+      <li>Trailing drawdown: ~$1,500</li>
+      <li>End-of-day drawdown likely (more forgiving than intraday trailing)</li>
+      <li>Min 7-10 trading days</li>
+      <li>Consistency rule ~30-40%</li>
+    </ul>
+
+    <h3>The 10-day pass plan</h3>
+    <table>
+      <thead><tr><th>Day</th><th>Goal</th><th>Trades</th><th>Approach</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>$100</td><td>1</td><td>Asian KZ only, 1 contract, 1R exit</td></tr>
+        <tr><td>2</td><td>$100</td><td>1</td><td>Same</td></tr>
+        <tr><td>3</td><td>Rest or $50</td><td>0-1</td><td>Build cushion before sizing up</td></tr>
+        <tr><td>4</td><td>$150</td><td>1-2</td><td>Slightly more after 2 wins</td></tr>
+        <tr><td>5</td><td>$150</td><td>1-2</td><td>Same</td></tr>
+        <tr><td>6</td><td>$200</td><td>2</td><td>Now you have ~$700 cushion</td></tr>
+        <tr><td>7</td><td>$200</td><td>2</td><td></td></tr>
+        <tr><td>8</td><td>$200</td><td>2</td><td></td></tr>
+        <tr><td>9</td><td>$200</td><td>2</td><td>Eval should pass around here</td></tr>
+        <tr><td>10</td><td>$200</td><td>2</td><td>Lock it in</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Total: ~$1,500.</strong> Right at the typical target with comfortable headroom.</p>
+
+    <h3>The 4 prop firm rules</h3>
+    <ol>
+      <li><strong>Risk 0.25–0.5% per trade max</strong> — half what you'd risk with personal money</li>
+      <li><strong>Personal daily loss cutoff at HALF the firm's limit</strong></li>
+      <li><strong>Take profits early</strong> — consistency rule means no single huge day</li>
+      <li><strong>Skip news days entirely</strong> — slippage will bust you</li>
+    </ol>
+
+    <button class="day-complete" onclick="markDay(29)">✓ Mark Day 29 Complete</button>
+  </div>
+</section>
+
+<!-- DAY 30 -->
+<section id="day30" class="day" data-day="30">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">30</div>
+    <div>
+      <div class="day-title">Building your routine · the rest of your life</div>
+      <div class="day-sub">From student to trader · 30 min</div>
+    </div>
+    <div class="chev">▼</div>
+  </div>
+  <div class="day-body">
+    <h3>Congratulations — you finished the 30 days</h3>
+    <p>You now know more about trading than 90% of people who put real money into it. The hard part is what comes next: doing this consistently for months and years.</p>
+
+    <h3>Your daily routine going forward</h3>
+
+    <h4>Pre-session (4-5 PM PT for Asian)</h4>
+    <ul>
+      <li>Check the economic calendar — any major news in the next 12 hours? If yes, sit out.</li>
+      <li>Check Asian session start (8 PM ET / 5 PM PT)</li>
+      <li>Open MNQ on TradingView, load your indicator</li>
+      <li>Note overnight news, futures gap, anything unusual</li>
+      <li>Set your daily mental loss limit</li>
+    </ul>
+
+    <h4>During the session</h4>
+    <ul>
+      <li>Wait for the Asian range to form (first 1-2 hours)</li>
+      <li>Identify Asian high and low</li>
+      <li>Wait for setup at one of those edges</li>
+      <li>Run pre-trade checklist</li>
+      <li>Take ONE trade — at most</li>
+      <li>Walk away after entry</li>
+      <li>Honor stop OR target. No mid-trade changes.</li>
+    </ul>
+
+    <h4>Post-session</h4>
+    <ul>
+      <li>Journal the trade — even if you didn't take one</li>
+      <li>Update your profit calendar</li>
+      <li>Review what you saw, what you did, what you'd do different</li>
+      <li>Close TradingView. Go live your life.</li>
+    </ul>
+
+    <h3>The mindset shift</h3>
+    <p>Trading isn't a job where you clock in and click buttons. It's a craft you practice. Most days you should be doing nothing. Some days you take a trade. Some weeks you take none. <strong>The trader who does nothing 80% of the time and takes great trades 20% beats the trader who's clicking every day.</strong></p>
+
+    <h3>What's next?</h3>
+    <ul>
+      <li>Paper trade the Asian session strategy for 2 more weeks before going live</li>
+      <li>When you go live, start with 1 contract on a small account ($500-1000)</li>
+      <li>After 30 profitable days on 1 contract, scale to 2 contracts</li>
+      <li>After 60 profitable days on 2 contracts, talk to Justin about prop firm eval</li>
+      <li>Re-read this guide every month for the first year</li>
+    </ul>
+
+    <div class="tip">
+      <strong>Final words:</strong> The market doesn't care about you. It will keep going whether you make money or lose money. Your job is to show up, follow the rules, and do nothing emotional. That's it. That's the whole game.
+    </div>
+
+    <button class="day-complete" onclick="markDay(30)">✓ Mark Day 30 Complete · GRADUATE</button>
+  </div>
+</section>
+
+<!-- ═══════════════ TOOLS ═══════════════ -->
+
+<div id="tools" class="tools">
+  <h2>▸ Tools — Use These Every Day</h2>
+
+  <h3 id="risk-section">Position Size & Risk Calculator</h3>
+  <div class="risk-calc">
+    <div class="grid">
+      <div>
+        <label>ACCOUNT SIZE ($)</label>
+        <input type="number" id="acct" value="5000">
+      </div>
+      <div>
+        <label>RISK PER TRADE (%)</label>
+        <input type="number" id="riskPct" value="1" step="0.25">
+      </div>
+      <div>
+        <label>STOP DISTANCE (points)</label>
+        <input type="number" id="stopPts" value="25">
+      </div>
+      <div>
+        <label>RR TARGET</label>
+        <input type="number" id="rrTgt" value="2" step="0.5">
+      </div>
+    </div>
+    <div class="out">
+      <div><span>Max risk per trade:</span><strong id="maxRisk">$50.00</strong></div>
+      <div><span>Stop in dollars (1 contract):</span><strong id="stopDol">$50.00</strong></div>
+      <div><span>Max contracts:</span><strong id="numContracts">1</strong></div>
+      <div><span>Total $ at risk:</span><strong id="totalRisk">$50.00</strong></div>
+      <div><span>Target distance:</span><strong id="tgtPts">50 pts</strong></div>
+      <div><span>Profit if hit:</span><strong id="profitTgt">$100.00</strong></div>
+    </div>
+  </div>
+
+  <h3 id="journal-section">Trade Journal</h3>
+  <p>Log every trade. Wins, losses, paper, real. Your brain forgets — your journal doesn't.</p>
+  <div class="journal-form">
+    <label>NEW TRADE</label>
+    <input type="date" id="jDate">
+    <select id="jDir">
+      <option value="LONG">LONG</option>
+      <option value="SHORT">SHORT</option>
+    </select>
+    <input type="number" id="jEntry" placeholder="Entry price" step="0.25">
+    <input type="number" id="jExit" placeholder="Exit price" step="0.25">
+    <input type="number" id="jPL" placeholder="P&L ($)" step="0.5">
+    <input type="number" id="jR" placeholder="R achieved (e.g. 2)" step="0.1">
+    <textarea id="jNotes" placeholder="What was the setup? What went right/wrong?"></textarea>
+    <button onclick="addJournal()">+ ADD TRADE</button>
+  </div>
+  <div id="journalList"></div>
+
+  <h3 id="calendar-section">30-Day Profit Calendar</h3>
+  <p>Click any day to log P&L. Green = win, red = loss, gold = flat / no trade. Saves automatically.</p>
+  <div id="calendar"></div>
+  <div class="cal-summary">
+    <div class="cal-stat"><div class="label">Total P&L</div><div class="val" id="totalPL">$0</div></div>
+    <div class="cal-stat"><div class="label">Win Days</div><div class="val" id="winDays">0</div></div>
+    <div class="cal-stat"><div class="label">Loss Days</div><div class="val" id="lossDays">0</div></div>
+    <div class="cal-stat"><div class="label">Win %</div><div class="val" id="winPct">0%</div></div>
+  </div>
+</div>
+
+<!-- GLOSSARY -->
+<div id="glossary" class="tools">
+  <h2>▸ Glossary</h2>
+  <table>
+    <tbody>
+      <tr><th>SMC</th><td>Smart Money Concepts — institutional order flow methodology</td></tr>
+      <tr><th>FVG</th><td>Fair Value Gap — 3-candle imbalance pattern</td></tr>
+      <tr><th>OB</th><td>Order Block — last opposing candle before a strong move</td></tr>
+      <tr><th>HTF / LTF</th><td>Higher / Lower Time Frame</td></tr>
+      <tr><th>Killzone</th><td>High-probability time window within a session</td></tr>
+      <tr><th>R / RR</th><td>Risk unit / Risk-to-Reward ratio (1R = your stop loss in dollars)</td></tr>
+      <tr><th>OHLC</th><td>Open, High, Low, Close — the 4 numbers in every candle</td></tr>
+      <tr><th>PDH / PDL</th><td>Previous Day High / Low</td></tr>
+      <tr><th>PWH / PWL</th><td>Previous Week High / Low</td></tr>
+      <tr><th>OR</th><td>Opening Range — typically the first 15-30 min of a session</td></tr>
+      <tr><th>BOS</th><td>Break of Structure (continuation signal)</td></tr>
+      <tr><th>CHoCH</th><td>Change of Character (reversal signal)</td></tr>
+      <tr><th>Liquidity Sweep</th><td>Wick that takes out a previous swing high/low to grab stops</td></tr>
+      <tr><th>Mitigation</th><td>When price returns into a previous FVG/OB</td></tr>
+      <tr><th>MNQ</th><td>Micro E-mini Nasdaq-100 future ($2/point, $0.50/tick)</td></tr>
+      <tr><th>NQ</th><td>E-mini Nasdaq-100 future ($20/point, $5/tick — 10× MNQ)</td></tr>
+      <tr><th>Long / Short</th><td>Buying / Selling (betting up / betting down)</td></tr>
+      <tr><th>Stop loss</th><td>Auto-exit order that limits your loss</td></tr>
+      <tr><th>Take profit</th><td>Auto-exit order that locks in your win</td></tr>
+      <tr><th>Slippage</th><td>Price moving between order click and fill</td></tr>
+      <tr><th>Spread</th><td>Difference between bid and ask</td></tr>
+      <tr><th>PDT</th><td>Pattern Day Trader rule (stocks only — futures don't have this)</td></tr>
+      <tr><th>Prop firm</th><td>Proprietary trading firm — gives you capital to trade</td></tr>
+      <tr><th>Drawdown</th><td>How far your account is below its peak</td></tr>
+      <tr><th>Trailing drawdown</th><td>Drawdown that follows your highest balance up</td></tr>
+      <tr><th>Killzone</th><td>Specific high-volatility windows in a session</td></tr>
+      <tr><th>FOMO</th><td>Fear Of Missing Out — top emotional killer</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</main>
+
+<footer>
+  Quebic Labs · Stevey's Trading School v1 · Built with love by Justin · 2026<br>
+  Companion to <a href="file:///Users/quebiclabs/quebic-smc-suite.pine">quebic-smc-suite.pine</a>
+</footer>
+
+<script>
+// ─── Day open/close ──────────────────────────────────
+function toggleDay(headerEl) {
+  const day = headerEl.parentElement;
+  day.classList.toggle('open');
+}
+
+// ─── Day completion + progress ──────────────────────
+function markDay(num) {
+  const key = 'sty-day-' + num;
+  const isComplete = localStorage.getItem(key) === '1';
+  const newState = !isComplete;
+  if (newState) {
+    localStorage.setItem(key, '1');
+  } else {
+    localStorage.removeItem(key);
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  let count = 0;
+  for (let i = 1; i <= 30; i++) {
+    const key = 'sty-day-' + i;
+    const day = document.querySelector(`[data-day="${i}"]`);
+    if (localStorage.getItem(key) === '1') {
+      count++;
+      if (day) day.classList.add('complete');
+    } else {
+      if (day) day.classList.remove('complete');
+    }
+  }
+  const pct = (count / 30) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressDays').textContent = count;
+}
+
+// ─── Quizzes ─────────────────────────────────────────
+document.querySelectorAll('.quiz-q').forEach(q => {
+  const correct = parseInt(q.dataset.correct);
+  q.querySelectorAll('label').forEach((label, idx) => {
+    label.addEventListener('click', () => {
+      q.querySelectorAll('label').forEach(l => l.classList.remove('correct', 'wrong'));
+      if (idx === correct) {
+        label.classList.add('correct');
+      } else {
+        label.classList.add('wrong');
+        const correctLabel = q.querySelectorAll('label')[correct];
+        if (correctLabel) correctLabel.classList.add('correct');
+      }
+    });
+  });
+});
+
+// ─── Risk calculator ─────────────────────────────────
+const POINT_VAL = 2.0;
+function calcRisk() {
+  const a = +document.getElementById('acct').value || 0;
+  const r = +document.getElementById('riskPct').value || 0;
+  const s = +document.getElementById('stopPts').value || 0;
+  const rr = +document.getElementById('rrTgt').value || 0;
+
+  const maxRisk = a * (r / 100);
+  const stopDol = s * POINT_VAL;
+  const numContracts = stopDol > 0 ? Math.max(0, Math.floor(maxRisk / stopDol)) : 0;
+  const totalRisk = numContracts * stopDol;
+  const tgtPts = s * rr;
+  const profit = numContracts * tgtPts * POINT_VAL;
+
+  document.getElementById('maxRisk').textContent = '$' + maxRisk.toFixed(2);
+  document.getElementById('stopDol').textContent = '$' + stopDol.toFixed(2);
+  document.getElementById('numContracts').textContent = numContracts;
+  document.getElementById('totalRisk').textContent = '$' + totalRisk.toFixed(2);
+  document.getElementById('tgtPts').textContent = tgtPts.toFixed(0) + ' pts';
+  document.getElementById('profitTgt').textContent = '$' + profit.toFixed(2);
+}
+['acct','riskPct','stopPts','rrTgt'].forEach(id => {
+  document.getElementById(id).addEventListener('input', calcRisk);
+});
+calcRisk();
+
+// ─── Trade journal ───────────────────────────────────
+function loadJournal() {
+  return JSON.parse(localStorage.getItem('sty-journal') || '[]');
+}
+function saveJournal(arr) {
+  localStorage.setItem('sty-journal', JSON.stringify(arr));
+}
+function renderJournal() {
+  const list = document.getElementById('journalList');
+  const arr = loadJournal();
+  if (arr.length === 0) {
+    list.innerHTML = '<div style="color: var(--text-dim); padding: 12px; text-align: center;">No trades logged yet. Add your first trade above.</div>';
+    return;
+  }
+  list.innerHTML = arr.slice().reverse().map((t, idx) => {
+    const realIdx = arr.length - 1 - idx;
+    const cls = t.pl > 0 ? 'win' : t.pl < 0 ? 'loss' : '';
+    const sign = t.pl >= 0 ? '+' : '';
+    return `<div class="journal-entry ${cls}">
+      <div class="je-head">
+        <span><strong>${t.date}</strong> · ${t.dir} · entry ${t.entry} → exit ${t.exit}</span>
+        <span class="je-pl">${sign}$${t.pl.toFixed(2)} (${t.r}R)</span>
+      </div>
+      <div style="color: var(--text-dim); font-size: 11px;">${t.notes || '(no notes)'}</div>
+      <button onclick="delJournal(${realIdx})" style="background: none; border: none; color: var(--bear); cursor: pointer; font-size: 10px; padding: 4px 0 0;">delete</button>
+    </div>`;
+  }).join('');
+}
+function addJournal() {
+  const date = document.getElementById('jDate').value;
+  const dir = document.getElementById('jDir').value;
+  const entry = +document.getElementById('jEntry').value;
+  const exit = +document.getElementById('jExit').value;
+  const pl = +document.getElementById('jPL').value;
+  const r = +document.getElementById('jR').value;
+  const notes = document.getElementById('jNotes').value;
+  if (!date || !entry || !exit) {
+    alert('Date, entry, and exit are required.');
+    return;
+  }
+  const arr = loadJournal();
+  arr.push({ date, dir, entry, exit, pl, r, notes });
+  saveJournal(arr);
+  document.getElementById('jEntry').value = '';
+  document.getElementById('jExit').value = '';
+  document.getElementById('jPL').value = '';
+  document.getElementById('jR').value = '';
+  document.getElementById('jNotes').value = '';
+  renderJournal();
+}
+function delJournal(idx) {
+  const arr = loadJournal();
+  arr.splice(idx, 1);
+  saveJournal(arr);
+  renderJournal();
+}
+document.getElementById('jDate').value = new Date().toISOString().split('T')[0];
+renderJournal();
+
+// ─── Profit calendar (30-day grid) ───────────────────
+function renderCalendar() {
+  const cal = document.getElementById('calendar');
+  cal.innerHTML = '';
+  const data = JSON.parse(localStorage.getItem('sty-cal') || '{}');
+  let total = 0, wins = 0, losses = 0;
+  for (let i = 1; i <= 30; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell';
+    const pl = data[i];
+    if (pl !== undefined) {
+      total += pl;
+      if (pl > 0) { cell.classList.add('win'); wins++; }
+      else if (pl < 0) { cell.classList.add('loss'); losses++; }
+      else { cell.classList.add('flat'); }
+    }
+    const sign = pl > 0 ? '+' : '';
+    cell.innerHTML = `<div class="day-no">D${i}</div><div class="pl">${pl !== undefined ? sign + '$' + pl : '–'}</div>`;
+    cell.addEventListener('click', () => {
+      const input = prompt(`Day ${i} P&L (positive for win, negative for loss, 0 for flat, blank to clear):`, pl !== undefined ? pl : '');
+      if (input === null) return;
+      if (input === '') {
+        delete data[i];
+      } else {
+        data[i] = parseFloat(input) || 0;
+      }
+      localStorage.setItem('sty-cal', JSON.stringify(data));
+      renderCalendar();
+    });
+    cal.appendChild(cell);
+  }
+  document.getElementById('totalPL').textContent = (total >= 0 ? '+$' : '-$') + Math.abs(total).toFixed(0);
+  document.getElementById('totalPL').style.color = total > 0 ? 'var(--neon-green)' : total < 0 ? 'var(--bear)' : 'var(--gold)';
+  document.getElementById('winDays').textContent = wins;
+  document.getElementById('lossDays').textContent = losses;
+  const totalDays = wins + losses;
+  document.getElementById('winPct').textContent = totalDays > 0 ? Math.round((wins / totalDays) * 100) + '%' : '0%';
+}
+renderCalendar();
+
+// ─── Smooth nav scroll ──────────────────────────────
+document.querySelectorAll('nav.daynav a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Auto-open the day if it's a day card
+      if (target.classList.contains('day') && !target.classList.contains('open')) {
+        target.classList.add('open');
+      }
+    }
+  });
+});
+
+// ─── Init ───────────────────────────────────────────
+updateProgress();
+</script>
+
+</body>
+</html>
