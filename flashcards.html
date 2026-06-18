@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stevey's Trading Cheat Kit · Quebic Labs</title>
+<style>
+  :root{
+    --bg:#0c1118; --panel:#141b25; --panel2:#1b2431; --ink:#e6edf3; --muted:#8aa0b4; --line:#26323f;
+    /* EXACT colors from Stevey's indicator */
+    --bull:#26a69a; --bear:#ef5350;
+    --ob-bull:#2962ff; --ob-bear:#aa00ff;
+    --ote:#ffd700; --key:#ff9800;
+    --buy:#00ff88; --sell:#ff1744;
+    --asian:#ffeb3b; --london:#03a9f4; --ny:#4caf50;
+    --pdl:#ff5252; --pwl:#7c4dff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px;margin:0 auto;padding:28px 20px 80px}
+  header.top{text-align:center;padding:18px 0 6px}
+  header.top .kicker{letter-spacing:.32em;font-size:11px;color:var(--key);font-weight:700;text-transform:uppercase}
+  header.top h1{font-size:34px;margin:8px 0 4px;font-weight:800;letter-spacing:-.5px}
+  header.top p{color:var(--muted);margin:0;font-size:15px}
+  .toolbar{display:flex;gap:10px;justify-content:center;margin:18px 0 8px;flex-wrap:wrap}
+  .btn{background:var(--key);color:#0c1118;border:none;font-weight:800;font-size:13px;
+    padding:11px 18px;border-radius:10px;cursor:pointer;letter-spacing:.02em}
+  .btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  section{margin-top:40px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px}
+  .sec-head .num{font-size:13px;font-weight:800;color:var(--key);background:rgba(255,152,0,.12);
+    border:1px solid rgba(255,152,0,.3);border-radius:7px;padding:3px 9px}
+  .sec-head h2{font-size:21px;margin:0;font-weight:800;letter-spacing:-.3px}
+  .sec-head .hint{color:var(--muted);font-size:13px;margin-left:auto}
+
+  /* ===== 5-STEP READ ===== */
+  .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 14px;position:relative}
+  .step .n{position:absolute;top:-12px;left:14px;width:26px;height:26px;border-radius:50%;
+    background:var(--key);color:#0c1118;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .step h3{margin:10px 0 6px;font-size:15px}
+  .step p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.5}
+  .step .big{font-size:26px;margin-bottom:2px}
+
+  /* ===== DIAGRAMS ===== */
+  .diagrams{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .chart-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .chart-card .ch-title{padding:14px 16px 4px}
+  .chart-card .ch-title h3{margin:0;font-size:16px;font-weight:800}
+  .chart-card .ch-title p{margin:4px 0 0;font-size:12.5px;color:var(--muted);line-height:1.5}
+  .chart-card svg{display:block;width:100%;height:auto;background:#0a0f15}
+  .legend-row{display:flex;flex-wrap:wrap;gap:8px 14px;padding:12px 16px 16px;font-size:11.5px;color:var(--muted)}
+  .legend-row span{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:14px;height:14px;border-radius:3px;display:inline-block}
+
+  /* ===== FLASHCARDS ===== */
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .flip{perspective:1400px;height:230px;cursor:pointer}
+  .flip-in{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
+  .flip.flipped .flip-in{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:18px;
+    display:flex;flex-direction:column;border:1px solid var(--line)}
+  .front{background:var(--panel)}
+  .back{background:var(--panel2);transform:rotateY(180deg)}
+  .face .tag{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+  .face .icon{font-size:40px;margin:6px 0 8px}
+  .face h3{margin:0 0 8px;font-size:19px;font-weight:800;line-height:1.15}
+  .face p{margin:0;font-size:13px;color:var(--muted);line-height:1.55}
+  .face .do{margin-top:auto;font-size:12.5px;font-weight:700;color:var(--ink);
+    border-top:1px dashed var(--line);padding-top:10px}
+  .face .do b{color:var(--key)}
+  .flip .hintflip{position:absolute;bottom:8px;right:12px;font-size:10px;color:var(--muted);opacity:.7}
+  .swatch-strip{display:flex;gap:4px;margin:4px 0 8px}
+  .swatch-strip i{width:26px;height:14px;border-radius:3px;display:block}
+
+  /* ===== DECODER TABLE ===== */
+  .decoder{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:var(--panel2)}
+  td.what{font-weight:700}
+  td.do{color:var(--muted)}
+  .chip{display:inline-flex;align-items:center;gap:8px;font-weight:700}
+  .chip .box{width:34px;height:18px;border-radius:4px;border:1px solid rgba(255,255,255,.15)}
+  .chip .tri{width:0;height:0}
+
+  /* ===== RULES ===== */
+  .rules{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .rule{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--key);border-radius:12px;padding:16px}
+  .rule h4{margin:0 0 6px;font-size:15px}
+  .rule p{margin:0;font-size:13px;color:var(--muted);line-height:1.55}
+  .rule.stop{border-left-color:var(--sell)}
+  .rule.go{border-left-color:var(--buy)}
+
+  footer{margin-top:50px;text-align:center;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:20px}
+
+  @media (max-width:900px){
+    .steps{grid-template-columns:1fr 1fr}
+    .diagrams{grid-template-columns:1fr}
+    .cards{grid-template-columns:1fr 1fr}
+    .rules{grid-template-columns:1fr}
+  }
+
+  /* ===== PRINT — cards by the monitor ===== */
+  @media print{
+    @page{margin:12mm}
+    *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+    .no-print{display:none !important}
+    .wrap{max-width:none}
+    section{break-inside:avoid;page-break-inside:avoid}
+    .flip{height:auto;perspective:none}
+    .flip-in{transform:none !important}
+    .face{position:relative;backface-visibility:visible;transform:none !important;height:auto;margin-bottom:8px}
+    .back{transform:none !important}
+    .flip .hintflip{display:none}
+    .cards{grid-template-columns:1fr 1fr}
+    .diagrams{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="kicker">Quebic Labs · For Stevey</div>
+    <h1>Your Chart Cheat Kit</h1>
+    <p>Everything on your TradingView chart — what it means, what to do. Same colors as your indicator.</p>
+    <div class="toolbar no-print">
+      <button class="btn" onclick="window.print()">🖨️ Print these cards</button>
+      <button class="btn alt" onclick="flipAll()">🔄 Flip all cards</button>
+    </div>
+  </header>
+
+  <!-- ================= 5-STEP READ ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="num">START HERE</span>
+      <h2>The 5-Second Read</h2>
+      <span class="hint">Run this every time, in order. If any step is a "no" — you wait.</span>
+    </div>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div class="big">🕒</div><h3>Are we in a killzone?</h3><p>Is the background tinted orange? If not, the market is noise. Walk away.</p></div>
+      <div class="step"><span class="n">2</span><div class="big">📈</div><h3>Which way is it going?</h3><p>Higher highs = up, lower lows = down. You only trade <i>with</i> the direction.</p></div>
+      <div class="step"><span class="n">3</span><div class="big">💥</div><h3>Was there a big move?</h3><p>A sudden long candle (a "drop" or "pop"). That's big money. It leaves a gap behind.</p></div>
+      <div class="step"><span class="n">4</span><div class="big">↩️</div><h3>Is price coming back?</h3><p>Price pulls back into the gap, the order block, or the gold zone. You wait for it here.</p></div>
+      <div class="step"><span class="n">5</span><div class="big">🟢</div><h3>Did the arrow fire?</h3><p>Green triangle = BUY, red = SELL. Now you take the trade the chart drew for you.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= DIAGRAMS ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="num">SEE IT</span>
+      <h2>The 4 Pictures To Memorize</h2>
+      <span class="hint">These are the only setups you're hunting for.</span>
+    </div>
+    <div class="diagrams" id="diagrams"></div>
+  </section>
+
+  <!-- ================= FLASHCARDS ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="num">DRILL IT</span>
+      <h2>Flashcards</h2>
+      <span class="hint no-print">Tap a card to flip it. Tap again to flip back.</span>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <!-- ================= DECODER ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="num">DECODE IT</span>
+      <h2>Chart Color Decoder</h2>
+      <span class="hint">Every color on your screen → what to do. Tape this by your monitor.</span>
+    </div>
+    <div class="decoder">
+      <table id="decoder"></table>
+    </div>
+  </section>
+
+  <!-- ================= RULES ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="num">RULES</span>
+      <h2>The 6 Rules That Keep You In The Game</h2>
+    </div>
+    <div class="rules">
+      <div class="rule go"><h4>1. The chart enters for you</h4><p>Gold line = where you get in. You don't guess the entry — the indicator drew it.</p></div>
+      <div class="rule stop"><h4>2. The red line is law</h4><p>Red line = your stop. If price hits it, you're out. No "let me give it room." That's how accounts die.</p></div>
+      <div class="rule"><h4>3. Take profit at the green lines</h4><p>Green lines = your targets, with the dollar amount on each. Take some off at TP1, let the rest run.</p></div>
+      <div class="rule"><h4>4. Orange = wait, Green/Red = go</h4><p>Orange "WATCH" arrow means get ready, hands off. Only the green/red arrow is permission to click.</p></div>
+      <div class="rule"><h4>5. One setup at a time</h4><p>One trade, one contract while learning. Win or lose, log it. No revenge clicking after a loss.</p></div>
+      <div class="rule"><h4>6. No killzone, no trade</h4><p>If the background isn't tinted, close the platform. The edge only exists inside the killzones.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    Built by Quebic Labs · Colors match your "QL-SMC" indicator exactly · Print this and keep it by your screen.
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   CANDLE CHART RENDERER  (draws the 4 teaching diagrams)
+   ============================================================ */
+const C = {
+  bull:'#26a69a', bear:'#ef5350', obBull:'#2962ff', obBear:'#aa00ff',
+  ote:'#ffd700', key:'#ff9800', buy:'#00ff88', sell:'#ff1744',
+  grid:'#1c2733', txt:'#cfdae6', mut:'#7f93a6'
+};
+const W=640,H=360, PAD={l:18,r:96,t:34,b:24};
+
+function chart(d){
+  const n=d.candles.length;
+  const plotW=W-PAD.l-PAD.r, plotH=H-PAD.t-PAD.b;
+  const step=plotW/n;
+  const cw=Math.min(step*0.52,22);
+  const xC=i=>PAD.l+step*(i+0.5);
+  const y=p=>PAD.t+(d.pMax-p)/(d.pMax-d.pMin)*plotH;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img">`;
+
+  // faint grid
+  for(let g=0;g<=4;g++){const yy=PAD.t+plotH*g/4;s+=`<line x1="${PAD.l}" y1="${yy}" x2="${W-PAD.r}" y2="${yy}" stroke="${C.grid}" stroke-width="1"/>`;}
+
+  // boxes (zones) behind candles
+  (d.boxes||[]).forEach(b=>{
+    const x1=xC(b.x0)-cw/2-2;
+    const x2=(b.x1==='right')?(W-PAD.r):xC(b.x1)+cw/2+2;
+    const yt=y(b.pHi), yb=y(b.pLo);
+    s+=`<rect x="${x1}" y="${yt}" width="${x2-x1}" height="${yb-yt}" fill="${b.color}" fill-opacity="${b.op||0.18}" stroke="${b.color}" stroke-opacity="0.7" stroke-width="1.3" ${b.dash?'stroke-dasharray="4 3"':''}/>`;
+    if(b.label){s+=`<text x="${x2-6}" y="${(yt+yb)/2+4}" text-anchor="end" font-size="11" font-weight="800" fill="${b.color}">${b.label}</text>`;}
+  });
+
+  // horizontal lines (entry/stop/target/key)
+  (d.lines||[]).forEach(l=>{
+    const yy=y(l.p);
+    s+=`<line x1="${PAD.l}" y1="${yy}" x2="${W-PAD.r}" y2="${yy}" stroke="${l.color}" stroke-width="${l.w||2}" ${l.dash?'stroke-dasharray="5 4"':''}/>`;
+    s+=`<rect x="${W-PAD.r+2}" y="${yy-9}" width="${PAD.r-6}" height="18" rx="3" fill="${l.color}" fill-opacity="0.92"/>`;
+    s+=`<text x="${W-PAD.r+8}" y="${yy+4}" font-size="10.5" font-weight="800" fill="#08121a">${l.label}</text>`;
+  });
+
+  // candles
+  d.candles.forEach((k,i)=>{
+    const up=k.c>=k.o;const col=up?C.bull:C.bear;const x=xC(i);
+    s+=`<line x1="${x}" y1="${y(k.h)}" x2="${x}" y2="${y(k.l)}" stroke="${col}" stroke-width="1.6"/>`;
+    const yo=y(k.o),yc=y(k.c);const top=Math.min(yo,yc);const hgt=Math.max(Math.abs(yo-yc),2);
+    s+=`<rect x="${x-cw/2}" y="${top}" width="${cw}" height="${hgt}" fill="${col}" rx="1.5"/>`;
+  });
+
+  // swing dots
+  (d.swings||[]).forEach(p=>{
+    s+=`<circle cx="${xC(p.x)}" cy="${y(p.p)}" r="4.5" fill="none" stroke="${C.txt}" stroke-width="1.6"/>`;
+    s+=`<text x="${xC(p.x)}" y="${y(p.p)+(p.up?-10:18)}" text-anchor="middle" font-size="9.5" fill="${C.mut}" font-weight="700">${p.label}</text>`;
+  });
+
+  // arrows (entry signals)
+  (d.arrows||[]).forEach(a=>{
+    const x=xC(a.x);const col=a.color;
+    if(a.dir==='up'){const yy=y(a.p)+14;s+=`<polygon points="${x-9},${yy+12} ${x+9},${yy+12} ${x},${yy}" fill="${col}"/><text x="${x}" y="${yy+26}" text-anchor="middle" font-size="10" font-weight="900" fill="${col}">${a.text||''}</text>`;}
+    else{const yy=y(a.p)-14;s+=`<polygon points="${x-9},${yy-12} ${x+9},${yy-12} ${x},${yy}" fill="${col}"/><text x="${x}" y="${yy-16}" text-anchor="middle" font-size="10" font-weight="900" fill="${col}">${a.text||''}</text>`;}
+  });
+
+  // numbered callouts
+  (d.notes||[]).forEach(nn=>{
+    const x=xC(nn.x), yy=y(nn.p);
+    s+=`<circle cx="${x}" cy="${yy}" r="11" fill="${C.key}" />`;
+    s+=`<text x="${x}" y="${yy+4}" text-anchor="middle" font-size="12" font-weight="900" fill="#0c1118">${nn.n}</text>`;
+  });
+
+  s+=`</svg>`;
+  return s;
+}
+
+/* ---- diagram data ---- */
+const D1={ // Bullish FVG
+  pMin:108,pMax:134,
+  candles:[
+    {o:111,h:113,l:110,c:112},{o:112,h:114,l:110.5,c:113},
+    {o:113,h:129,l:112.5,c:128}, /* impulse pop */
+    {o:128,h:130,l:125.5,c:129},
+    {o:129,h:129.5,l:118.5,c:120}, /* pullback into gap */
+    {o:120,h:127,l:119,c:126},
+    {o:126,h:131,l:125,c:130}
+  ],
+  boxes:[{x0:2,x1:'right',pLo:114,pHi:125.5,color:C.bull,op:0.16,label:'FVG (gap)'}],
+  arrows:[{x:4,p:118.5,dir:'up',color:C.buy,text:'BUY'}],
+  notes:[{x:2,p:121,n:'1'},{x:4,p:130.5,n:'2'},{x:6,p:130,n:'3'}]
+};
+const D2={ // Bullish Order Block
+  pMin:111,pMax:133,
+  candles:[
+    {o:120,h:121,l:118.5,c:119},
+    {o:119,h:120,l:116.5,c:117},
+    {o:117.5,h:119,l:114,c:115}, /* THE order block (last red before pop) */
+    {o:115,h:128,l:114.5,c:127}, /* impulse */
+    {o:127,h:130,l:126,c:129},
+    {o:129,h:130,l:118,c:119},   /* return to OB */
+    {o:119,h:126,l:118,c:125}
+  ],
+  boxes:[{x0:2,x1:'right',pLo:114,pHi:119,color:C.obBull,op:0.20,label:'ORDER BLOCK'}],
+  arrows:[{x:5,p:118,dir:'up',color:C.buy,text:'BUY'}],
+  notes:[{x:2,p:121.5,n:'1'},{x:5,p:131,n:'2'}]
+};
+const D3={ // Retracement / OTE gold zone
+  pMin:106,pMax:144,
+  candles:[
+    {o:111,h:112,l:110,c:110.5},
+    {o:110.5,h:125,l:110,c:124},
+    {o:124,h:140,l:123,c:139}, /* swing high */
+    {o:139,h:140,l:131,c:132}, /* pullback */
+    {o:132,h:133,l:119,c:120}, /* into gold zone */
+    {o:120,h:128,l:118.5,c:127},
+    {o:127,h:141,l:126,c:140}
+  ],
+  boxes:[{x0:3,x1:'right',pLo:116.3,pHi:121.4,color:C.ote,op:0.20,label:'GOLD ZONE 62–79%'}],
+  lines:[
+    {p:118.9,color:C.key,label:'★ 0.705 bullseye',w:3},
+    {p:140,color:C.buy,label:'TARGET',dash:true},
+    {p:109,color:C.sell,label:'STOP',dash:true}
+  ],
+  swings:[{x:0,p:110.5,label:'swing low',up:false},{x:2,p:140,label:'swing high',up:true}],
+  arrows:[{x:4,p:119,dir:'up',color:C.buy,text:'BUY'}]
+};
+const D4={ // Bearish "big drop" FVG (shorts)
+  pMin:110,pMax:136,
+  candles:[
+    {o:130,h:131,l:129,c:130.5},{o:130.5,h:132,l:129,c:129.5},
+    {o:129,h:130,l:115,c:116}, /* BIG DROP impulse */
+    {o:116,h:118,l:113,c:114},
+    {o:114,h:124,l:113.5,c:123}, /* retrace up into gap */
+    {o:123,h:124,l:116,c:117},
+    {o:117,h:118,l:111,c:112}
+  ],
+  boxes:[{x0:2,x1:'right',pLo:118,pHi:129,color:C.bear,op:0.16,label:'FVG (gap)'}],
+  arrows:[{x:4,p:124,dir:'down',color:C.sell,text:'SELL'}],
+  notes:[{x:2,p:122,n:'1'},{x:4,p:113,n:'2'}]
+};
+
+const DIAGRAMS=[
+  {title:'Fair Value Gap (FVG) — the buy gap',
+   desc:'<b>1</b> A big green candle pops up fast (displacement). <b>2</b> It skips over price, leaving an empty teal gap. <b>3</b> Price drifts back down to fill the gap → green BUY arrow. You buy where price re-enters the gap.',
+   data:D1, legend:[['FVG / gap',C.bull],['BUY arrow',C.buy]]},
+  {title:'Order Block (OB) — the buy zone',
+   desc:'<b>1</b> The last red candle right before a big pop = the order block (blue box). <b>2</b> Price comes back down and taps the blue box → green BUY arrow. That box is where the big buyers live.',
+   data:D2, legend:[['Order block',C.obBull],['BUY arrow',C.buy]]},
+  {title:'Retracement → the Gold Zone (OTE)',
+   desc:'Price runs from a <b>swing low</b> to a <b>swing high</b>, then pulls back. The gold box is the sweet spot (62–79%). The orange line is the bullseye. Buy in the zone, stop under the low, target the high.',
+   data:D3, legend:[['Gold zone',C.ote],['0.705 line',C.key],['Target',C.buy],['Stop',C.sell]]},
+  {title:'The "Big Drop" — selling (shorts)',
+   desc:'Same idea, flipped. <b>1</b> A sudden big <i>drop</i> leaves a red gap above it. <b>2</b> Price bounces back up into that red gap → red SELL arrow. You sell into the bounce and ride it back down.',
+   data:D4, legend:[['FVG / gap',C.bear],['SELL arrow',C.sell]]}
+];
+
+document.getElementById('diagrams').innerHTML = DIAGRAMS.map(g=>`
+  <div class="chart-card">
+    <div class="ch-title"><h3>${g.title}</h3><p>${g.desc}</p></div>
+    ${chart(g.data)}
+    <div class="legend-row">${g.legend.map(l=>`<span><i class="sw" style="background:${l[1]}"></i>${l[0]}</span>`).join('')}</div>
+  </div>`).join('');
+
+/* ============================================================
+   FLASHCARDS
+   ============================================================ */
+const CARDS=[
+  {tag:'Basics',icon:'🕯️',h:'The Candle',p:'Green = price went up that period. Red = it went down. The fat part is open→close, the thin wicks are the highest/lowest it reached.',do:'Read color first: <b>green up, red down</b>.'},
+  {tag:'Basics',icon:'🪜',h:'Trend / Structure',p:'Stair-stepping up (higher highs & higher lows) = uptrend. Stepping down = downtrend.',do:'Only trade <b>with</b> the stairs, never against.'},
+  {tag:'The move',icon:'💥',h:'Displacement',p:'A sudden, unusually long candle — a "drop" or a "pop." It means big money just moved hard in one direction.',do:'Big candle = <b>pay attention</b>, a gap was just made.'},
+  {tag:'The setup',icon:'🟦',h:'Fair Value Gap',p:'The empty space a big candle leaves behind. Price almost always comes back to "fill" it. Teal = buy gap, red = sell gap.',do:'Wait for price to <b>return to the gap</b>.'},
+  {tag:'The setup',icon:'🧱',h:'Order Block',p:'The last opposite-color candle right before a big move. It marks where the big players entered.',do:'Buy the <b>blue box</b>, sell the <b>purple box</b>.'},
+  {tag:'The setup',icon:'↩️',h:'Retracement',p:'After a big move, price pulls back before continuing. You never chase the move — you wait for the pullback.',do:'<b>Patience.</b> Let it come back to you.'},
+  {tag:'The setup',icon:'🎯',h:'The Gold Zone (OTE)',p:'The best part of a pullback: 62–79% of the move. The orange 0.705 line is the bullseye entry.',do:'Best entries happen <b>inside the gold box</b>.'},
+  {tag:'Signals',icon:'🟠',h:'WATCH Arrow',p:'Orange triangle = a setup is forming. Get ready. This is NOT permission to click yet.',do:'Orange = <b>hands off, eyes on</b>.'},
+  {tag:'Signals',icon:'🟢',h:'GO Arrow',p:'Green triangle = confirmed BUY. Red triangle = confirmed SELL. The conviction % shows how strong it is.',do:'Green/red arrow = <b>take the trade</b>.'},
+  {tag:'Execution',icon:'📏',h:'Entry · Stop · Target',p:'The indicator draws all three: gold line = get in, red line = get out if wrong, green lines = take profit.',do:'Trade the lines. <b>Don\'t freelance.</b>'},
+  {tag:'Timing',icon:'🕒',h:'Killzones',p:'The orange-tinted times (Asian, London, NY AM/PM) are when the real moves happen. Outside them = noise.',do:'<b>No tint, no trade.</b>'},
+  {tag:'Discipline',icon:'🛡️',h:'Protect The Account',p:'One contract while learning. Honor the red stop every time. Never add to a loser or revenge-trade.',do:'The <b>stop is not optional.</b>'}
+];
+
+document.getElementById('cards').innerHTML = CARDS.map(c=>`
+  <div class="flip" onclick="this.classList.toggle('flipped')">
+    <div class="flip-in">
+      <div class="face front">
+        <span class="tag">${c.tag}</span>
+        <div class="icon">${c.icon}</div>
+        <h3>${c.h}</h3>
+        <div class="do">${c.do}</div>
+      </div>
+      <div class="face back">
+        <span class="tag">${c.h}</span>
+        <p>${c.p}</p>
+        <div class="do">${c.do}</div>
+      </div>
+      <span class="hintflip">tap ↻</span>
+    </div>
+  </div>`).join('');
+
+function flipAll(){document.querySelectorAll('.flip').forEach(f=>f.classList.toggle('flipped'));}
+
+/* ============================================================
+   DECODER TABLE
+   ============================================================ */
+function box(c){return `<span class="chip"><span class="box" style="background:${c}"></span></span>`;}
+function tri(c,dir){return `<span class="chip"><span class="tri" style="border-left:9px solid transparent;border-right:9px solid transparent;${dir==='up'?'border-bottom':'border-top'}:14px solid ${c}"></span></span>`;}
+const DEC=[
+  ['head','WHAT YOU SEE','WHAT IT IS','WHAT TO DO'],
+  [tri(C.buy,'up'),'Green arrow + "BUY"','Confirmed long signal','Enter at the gold line. Stop = red, targets = green.'],
+  [tri(C.sell,'down'),'Red arrow + "SELL"','Confirmed short signal','Enter at the gold line. Stop = red, targets = green.'],
+  [tri(C.key,'up'),'Orange "WATCH" arrow','Setup forming — early warning','Get ready. Do NOT enter yet — wait for green/red.'],
+  [box(C.bull),'Teal box','Bullish Fair Value Gap','Buy zone — wait for price to drop back into it.'],
+  [box(C.bear),'Red box','Bearish Fair Value Gap','Sell zone — wait for price to rise back into it.'],
+  [box(C.obBull),'Blue box','Bullish Order Block','Buy zone — price returning here is your entry.'],
+  [box(C.obBear),'Purple box','Bearish Order Block','Sell zone — price returning here is your entry.'],
+  [box(C.ote),'Gold box','OTE / Gold Zone (62–79%)','The best pullback entry area. Watch for an arrow here.'],
+  ['<span class="chip" style="color:#ff9800;font-weight:900">━</span>','Thick orange line','The 0.705 "bullseye"','The single best entry price in the gold zone.'],
+  ['<span class="chip" style="color:#ffd700;font-weight:900">━</span>','Gold line','Your ENTRY','Where you get into the trade.'],
+  ['<span class="chip" style="color:#ff1744;font-weight:900">━</span>','Red line','Your STOP','Get out if price hits this. Always. No exceptions.'],
+  ['<span class="chip" style="color:#00ff88;font-weight:900">┄</span>','Green dashed lines','Your TARGETS (TP1/2/3)','Take profit here. Dollar amount is on each line.'],
+  ['<span class="chip" style="background:rgba(255,152,0,.4);width:34px;height:18px;border-radius:4px;display:inline-block"></span>','Orange background tint','Killzone is active','This is prime time. Only hunt setups while it\'s tinted.'],
+  ['<span class="chip" style="color:#ff5252;font-weight:900">━</span>','Red PDH/PDL lines','Previous Day High/Low','Price reacts here — magnet and reversal spots.'],
+];
+document.getElementById('decoder').innerHTML = DEC.map((r,i)=>
+  i===0 ? `<tr><th>${r[1]}</th><th>${r[2]}</th><th>${r[3]}</th></tr>`
+        : `<tr><td>${r[0]} <span class="what">${r[1]}</span></td><td>${r[2]}</td><td class="do">${r[3]}</td></tr>`
+).join('');
+</script>
+</body>
+</html>
